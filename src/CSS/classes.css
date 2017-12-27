@@ -1,0 +1,23 @@
+.classes-wrapper {
+	text-align: left;
+}
+
+.classes-wrapper button{
+	text-decoration: none;
+}
+
+
+#header {
+	text-align: center;
+}
+
+
+.add-class-btn {
+	margin: 20px;
+	text-align: center;
+}
+
+
+.classes-wrapper a:hover{
+	text-decoration: none;
+}

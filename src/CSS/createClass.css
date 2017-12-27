@@ -1,0 +1,24 @@
+.create-class-form{
+	width: 95%;
+	text-align: left;
+	margin: 0 auto;
+	padding: 10px; 
+}
+
+.student-input{
+	padding: 15px;
+}
+
+.add-student-btn{
+	float: right;
+	/*padding-top: 10px;*/
+}
+
+.student-wrapper{
+	margin-bottom: 10px;
+}
+
+.create-class-wrapper{
+	width: 95%;
+	margin: 0 auto;
+}

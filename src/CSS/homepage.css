@@ -1,0 +1,22 @@
+
+.home{
+	text-align: left;
+	margin: 15px;
+}
+
+
+
+.info-paragraph {
+	width: 50%;
+	text-align: left;
+}
+
+.logo{
+	/*height: 150px;*/
+}
+
+.logo-container {
+	margin: 0 auto;
+	text-align: center;
+	padding: 15px;
+}

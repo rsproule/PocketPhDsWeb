@@ -1,0 +1,129 @@
+
+.spacer {
+	height: 500px;
+}
+/* Div block */
+.navigation{
+	/*float: right;*/
+	/*width: 100%;*/
+}
+
+.navigation ul {
+	width: 100%;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+
+}
+
+/*everything is gonna float left unless it is the login stuff.. that floats the the right*/
+.navigation li {
+	float: left;
+}
+
+/*login stuff */
+.login-nav{
+	float: right;
+}
+
+
+
+
+.navigation li a {
+	color: #7f8184;;
+	text-decoration: none;
+	display: block;
+    text-align: center;
+    margin: 25px 16px;
+}
+.navigation li .dropdown-wrapper{
+	    margin: 25px 16px;	
+
+
+}
+.navigation li .dropdown-wrapper a{
+	    margin: 0 0;	
+	    
+
+}
+.navigation li a:hover {
+	color: #4a83e2;
+	cursor: pointer;
+}
+
+
+.navigation li .logo{
+	/*border: 1px black solid ;*/
+
+	margin: 14px 16px;
+	float: left;
+	display: block;
+	text-align: center;
+
+}
+
+
+.navigation li .active {
+	color: #4a83e2;
+	border-bottom: 3px solid #4a83e2; 
+	/*text-decoration: underline;*/
+}
+
+
+
+
+
+.navigation li .register{
+
+	background-color: #44474c;
+	color: white;
+	margin: 16px 16px;
+
+	padding: 10px;
+	border-radius: 6px;
+}
+
+.navigation li .account{
+
+	background-color: #7f8184;
+	color: white;
+	margin: 10px 16px;
+
+	padding: 16px;
+	border-radius: 50%;
+}
+
+.navigation li .drop {
+	margin: 0;
+	padding: 5px;
+	text-align: center;
+	color: black;
+
+}
+
+
+.navigation li .drop:hover {
+	color: #4a83e2;
+	cursor: pointer;
+}
+/*.navigation li .drop:active {
+	background-color: #4286f4;
+	color: black;
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
