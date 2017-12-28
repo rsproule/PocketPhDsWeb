@@ -1,6 +1,6 @@
 import '../../CSS/register.css';
 
-import fire from '../firebase.js';
+import { fire } from '../firebase.js';
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import Link from 'valuelink';
@@ -88,11 +88,11 @@ export default class Register extends Component {
             });
 
           // add this user to the database
-
           fire
             .database()
-            .ref('users/' + fire.auth.currentUser.uid)
+            .ref('users/' + fire.auth().currentUser.uid)
             .set({
+              type: 'teacher',
               name: fire.auth().currentUser.displayName,
               email: this.state.email,
               school: '',

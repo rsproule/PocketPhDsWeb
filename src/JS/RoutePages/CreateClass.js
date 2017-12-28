@@ -1,6 +1,7 @@
 import '../../CSS/createClass.css';
 
-import fire from '../firebase.js';
+import { registerAllStudents } from '../utils.js';
+import { fire } from '../firebase.js';
 import React, { Component } from 'react';
 //bootstrap
 import {
@@ -53,7 +54,18 @@ export default class CreateClass extends Component {
     });
   }
 
-  submit(classNameLink, studentLink) {
+  /**
+   * submitClass(classNameLink, studentLink)
+   *   This method uploads the class to the database and registers all the
+   *  parent/student emails
+   *
+   *  - first verify the form data with the value links
+   *  - ensure the teacher has verified account (sanity check)
+   *  - upload the class to the database
+   *  -
+   *
+   */
+  submitClass(classNameLink, studentLink) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     // make sure all of the students are valid
@@ -94,23 +106,57 @@ export default class CreateClass extends Component {
       return;
     }
 
-    console.log('good to upload');
+    registerAllStudents({ students: this.state.students })
+      .then(students_parents_id_array => {
+        // upload the class to firebase in the teachers name
+        var newClassRef = fire
+          .database()
+          .ref('/classes/')
+          .push({
+            name: this.state.className,
+            teacher: fire.auth().currentUser.uid,
+            students: students_parents_id_array.map(stud_par => {
+              var o = {};
+              o[stud_par['student']] = true;
+              return o;
+            })
+          });
 
-    // send emails to all the students to invite them to join the class:
-    //  complete registration and download the app
+        let newClassId = newClassRef.key;
 
-    // upload the class to firebase in the teachers name
-    var newClassRef = fire
-      .database()
-      .ref('/classes/')
-      .push({
-        name: this.state.className,
-        teacher: fire.auth().currentUser.uid
+        // give the teacher the class
+        fire
+          .database()
+          .ref(
+            '/users/' + fire.auth().currentUser.uid + '/classes/' + newClassId
+          )
+          .set(true);
+
+        // give each student+parent the class + create chat for student with tutor
+        for (let student_parent_map in students_parents_id_array) {
+          let stud_id = student_parent_map['student'];
+          let parent_id = student_parent_map['parent'];
+
+          //set the student to have the class... parent gets it by transitivity
+          fire
+            .database()
+            .ref('/users/' + stud_id + '/classes/' + newClassId)
+            .set(true);
+        }
+      })
+      .catch(error => {
+        alert(error);
+      })
+      .then(() => {
+        alert('success?');
       });
-
-    let newClassId = newClassRef.key;
   }
 
+  /**
+   * resendVerificationEmail()
+   *    Sends another verification email to the current user, this should only
+   *    be available when the user is not already verified
+   */
   resendVerificationEmail() {
     if (fire.auth().currentUser.emailVerified) return;
 
@@ -188,7 +234,7 @@ export default class CreateClass extends Component {
           <br />
           <Button
             color="primary"
-            onClick={() => this.submit(classNameLink, studentLink)}
+            onClick={() => this.submitClass(classNameLink, studentLink)}
           >
             {' '}
             Create Class{' '}

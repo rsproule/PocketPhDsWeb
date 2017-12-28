@@ -1,6 +1,6 @@
 import '../../CSS/classes.css';
 
-import fire from '../firebase.js';
+import { fire } from '../firebase.js';
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 //bootstrap

@@ -1,6 +1,6 @@
 import '../../CSS/login.css';
 
-import fire from '../firebase.js';
+import { fire } from '../firebase.js';
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import Link from 'valuelink';

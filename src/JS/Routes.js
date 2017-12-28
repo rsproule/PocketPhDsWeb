@@ -1,7 +1,7 @@
 import '../CSS/navbar.css';
 
 import plogo from '../Logos/PocketPhDsLogo(no_text).JPG';
-import fire from './firebase.js';
+import { fire } from './firebase.js';
 import NavLink from './navlink.js';
 import Account from './RoutePages/Account.js';
 import Class from './RoutePages/Class.js';

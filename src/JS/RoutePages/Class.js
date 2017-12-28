@@ -1,6 +1,6 @@
 import '../../CSS/class.css';
 
-import fire from '../firebase.js';
+import { fire } from '../firebase.js';
 import React, { Component } from 'react';
 //bootstrap
 import {
