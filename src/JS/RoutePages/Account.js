@@ -16,8 +16,8 @@ export default class Account extends Component {
       //user info
       name: 'Loading...',
       email: 'Loading...',
-      school: null,
-      profile_url: null,
+      school: false,
+      profile_url: false,
       classes: {},
 
       //meta
@@ -126,10 +126,12 @@ export default class Account extends Component {
               <Row>
                 <Col className="left-align">
                   <span className="avatar">
-                    {this.state.profile_url != null ? (
+                    {this.state.profile_url ? (
                       <img src={this.state.profile_url} alt="profile_img" />
-                    ) : (
+                    ) : this.state.name ? (
                       this.state.name.substring(0, 2).toUpperCase()
+                    ) : (
+                      this.state.email.substring(0, 2).toUpperCase()
                     )}
                   </span>
                   <span className="display-name">{this.state.name}</span>

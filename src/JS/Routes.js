@@ -145,7 +145,7 @@ class Routes extends Component {
 
         this.setState({
           isLoggedIn: true,
-          defaultInitials: json['displayName'].substring(0, 2).toUpperCase()
+          defaultInitials: json['email'].substring(0, 2).toUpperCase()
         });
       }
     }
@@ -209,12 +209,19 @@ class Routes extends Component {
                         toggle={() => this.toggle()}
                       >
                         <DropdownToggle caret>
-                          {fire.auth().currentUser
-                            ? fire
-                                .auth()
-                                .currentUser.displayName.substring(0, 2)
-                                .toUpperCase()
-                            : this.state.defaultInitials}
+                          {this.state.loadingUser
+                            ? '...'
+                            : fire.auth().currentUser
+                              ? fire.auth().currentUser.displayName
+                                ? fire
+                                    .auth()
+                                    .currentUser.displayName.substring(0, 2)
+                                    .toUpperCase()
+                                : fire
+                                    .auth()
+                                    .currentUser.email.substring(0, 2)
+                                    .toUpperCase()
+                              : this.state.defaultInitials}
                         </DropdownToggle>
                         <DropdownMenu right>
                           {// have to check dynamically if this is firefox becuase firefox

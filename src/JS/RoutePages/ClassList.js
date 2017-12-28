@@ -22,17 +22,25 @@ export default class ClassList extends Component {
         .database()
         .ref('/classes/' + cid)
         .once('value', snap => {
-          let name = snap.val().name;
-
-          this.setState({
-            classes: this.state.classes.concat([
-              {
-                id: cid,
-                name: name
-              }
-            ]),
-            loaded: true
-          });
+          if (snap.val()) {
+            // normal case
+            let name = snap.val().name;
+            this.setState({
+              classes: this.state.classes.concat([
+                {
+                  id: cid,
+                  name: name
+                }
+              ]),
+              loaded: true
+            });
+          } else {
+            //weird case where the class id was deleted from classes
+            // but not from the teachers classes list
+            this.setState({
+              loaded: true
+            });
+          }
         });
     }
   }

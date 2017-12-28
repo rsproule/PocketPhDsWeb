@@ -69,12 +69,35 @@ export default class Register extends Component {
       .then(() => {
         if (registerSuccessful) {
           // set default display name to email prefix
-          fire.auth().currentUser.updateProfile({
-            displayName: this.state.email.substring(
-              0,
-              this.state.email.indexOf('@')
-            )
-          });
+          fire
+            .auth()
+            .currentUser.updateProfile({
+              displayName: this.state.email.substring(
+                0,
+                this.state.email.indexOf('@')
+              )
+            })
+            .then(() => {
+              // add this user to the database
+              fire
+                .database()
+                .ref('users/' + fire.auth().currentUser.uid)
+                .set({
+                  type: 'teacher',
+                  name: fire.auth().currentUser.displayName,
+                  email: this.state.email,
+                  school: '',
+                  classes: {}
+                })
+                .catch(error => alert(error))
+                .then(() => {
+                  // this will force render to be called again this time with the redirect triggered
+                  this.setState({
+                    redirect: true,
+                    accountId: fire.auth().currentUser.uid
+                  });
+                });
+            });
 
           // send the verification email
           fire
@@ -85,25 +108,8 @@ export default class Register extends Component {
             })
             .catch(function(error) {
               // An error happened.
+              alert(error);
             });
-
-          // add this user to the database
-          fire
-            .database()
-            .ref('users/' + fire.auth().currentUser.uid)
-            .set({
-              type: 'teacher',
-              name: fire.auth().currentUser.displayName,
-              email: this.state.email,
-              school: '',
-              classes: {}
-            });
-
-          // this will force render to be called again this time with the redirect triggered
-          this.setState({
-            redirect: true,
-            accountId: fire.auth().currentUser.uid
-          });
         }
       });
   }
