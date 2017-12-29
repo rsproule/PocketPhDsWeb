@@ -83,11 +83,11 @@ var registerAllStudents = ({ students }) => {
           student: student,
           secondaryFire: secondaryFire
         })
-          .then(({ student_id, student }) => {
-            console.log(student_id);
+          .then(({ student_id, student, cancelUpload }) => {
             return uploadStudentToDatabase({
               student: student,
-              student_id: student_id
+              student_id: student_id,
+              cancelUpload: cancelUpload
             });
           })
           .then(({ student_id, student }) => {
@@ -98,11 +98,12 @@ var registerAllStudents = ({ students }) => {
               secondaryFire: secondaryFire
             });
           })
-          .then(({ student_id, student, parent_id }) => {
+          .then(({ student_id, student, parent_id, cancelUpload }) => {
             return uploadParentToDatabase({
               student: student,
               student_id: student_id,
-              parent_id: parent_id
+              parent_id: parent_id,
+              cancelUpload: cancelUpload
             });
           })
           .then(({ student_id, parent_id }) => {
@@ -153,13 +154,21 @@ var createStudent = ({ student, secondaryFire }) => {
       })
       .catch(error => {
         // TODO: in case where email is already in use we should do something else
-        if (error === 'auth/email-already-in-use') {
-          //continue;
-          alert(error + ' -> ' + student.email_student);
-          secondaryFire.delete();
-          //          resolve({id : getId(userAuth), student : student})
+        if (error.code === 'auth/email-already-in-use') {
+          //secondaryFire.delete(); <-- dont need this anymore because it reflow normally and eventually be destroyed
+          fire
+            .database()
+            .ref('/emailToUId/' + student.email_student.replace('.', ','))
+            .once('value', snap => {
+              resolve({
+                student_id: snap.val(),
+                student: student,
+                cancelUpload: true
+              });
+            });
+        } else {
+          reject(error);
         }
-        reject(error);
       });
   });
 };
@@ -192,12 +201,22 @@ var createParent = ({ student_id, student, secondaryFire }) => {
       })
       .catch(error => {
         // TODO: in case where email is already in use we should do something else
-        if (error === 'auth/email-already-in-use') {
+        if (error.code === 'auth/email-already-in-use') {
           //continue;
-          alert(error + ' -> ' + student.email_parent);
-          secondaryFire.delete();
+          fire
+            .database()
+            .ref('/emailToUId/' + student.email_parent.replace('.', ','))
+            .once('value', snap => {
+              resolve({
+                parent_id: snap.val(),
+                student: student,
+                student_id: student_id,
+                cancelUpload: true
+              });
+            });
+        } else {
+          reject(error);
         }
-        reject(error);
       });
   });
 };
@@ -209,82 +228,112 @@ function getId(userAuth) {
   return userAuth.user ? userAuth.user.uid : userAuth.uid;
 }
 
-var uploadStudentToDatabase = ({ student, student_id }) => {
+var uploadStudentToDatabase = ({ student, student_id, cancelUpload }) => {
   return new Promise((resolveUpload, rejectUpload) => {
-    //create chat for student
-    var chatRef = fire
-      .database()
-      .ref('chats')
-      .push({
-        name: 'Brain Coach Chat',
-        lastMessage: 'Welcome to Pocket Phds',
-        timestamp: +new Date(),
-        image: 'http://52.14.73.202/~rsproule/pocketPhDsLogo.png'
-      })
-      .then(chatSnap => {
-        // add user to the database
-        console.log(student);
-        return fire
-          .database()
-          .ref('/users/' + student_id)
-          .set({
-            type: 'student',
-            email: student.email_student,
-            chat: chatSnap.key,
-            name: student.name,
-            classes: {},
-            // give them the starter module
-            modules: {
-              module1: {
-                description: 'Welcome to Pocket PhDs',
-                isUnlocked: true,
-                name: 'Module 1',
-                nextModule: 'module2',
-                videoWatched: false,
-                quizTaken: false
+    if (cancelUpload) {
+      resolveUpload({ student_id: student_id, student: student });
+    } else {
+      //create chat for student
+      var chatRef = fire
+        .database()
+        .ref('chats')
+        .push({
+          name: 'Brain Coach Chat',
+          lastMessage: 'Welcome to Pocket Phds',
+          timestamp: +new Date(),
+          image: 'http://52.14.73.202/~rsproule/pocketPhDsLogo.png'
+        })
+        .then(chatSnap => {
+          // add user to the database
+          console.log(student);
+          return fire
+            .database()
+            .ref('/users/' + student_id)
+            .set({
+              type: 'student',
+              email: student.email_student,
+              chat: chatSnap.key,
+              name: student.name,
+              classes: {},
+              // give them the starter module
+              modules: {
+                module1: {
+                  description: 'Welcome to Pocket PhDs',
+                  isUnlocked: true,
+                  name: 'Module 1',
+                  nextModule: 'module2',
+                  videoWatched: false,
+                  quizTaken: false
+                }
               }
-            }
-          });
-      })
-      .then(() => {
-        resolveUpload({ student_id: student_id, student: student });
-      })
-      .catch(error => {
-        rejectUpload(error);
-      });
+            });
+        })
+        .then(() => {
+          // add to the email uid map for lookup
+
+          return fire
+            .database()
+            .ref('/emailToUId/' + student.email_student.replace('.', ','))
+            .set(student_id);
+        })
+        .then(() => {
+          resolveUpload({ student_id: student_id, student: student });
+        })
+        .catch(error => {
+          rejectUpload(error);
+        });
+    }
   });
 };
 
-var uploadParentToDatabase = ({ student_id, parent_id, student }) => {
+var uploadParentToDatabase = ({
+  student_id,
+  parent_id,
+  student,
+  cancelUpload
+}) => {
   return new Promise((res, rej) => {
-    let parentRef = fire.database().ref('/users/' + parent_id);
-    // check if the parent already is out here
-    parentRef.once('value', snap => {
-      // check if the parent is already there
-      // if it is only update the student column
-      if (snap.val()) {
-        var studentsMap = snap.val().students;
-        studentsMap[student_id] = true;
-        return parentRef.update({ students: studentsMap }).then(() => {
-          res({ student_id: student_id, parent_id: parent_id });
-        });
-      }
+    if (cancelUpload) {
+      res({ student_id: student_id, parent_id: parent_id });
+    } else {
+      let parentRef = fire.database().ref('/users/' + parent_id);
+      // check if the parent already is out here
+      parentRef.once('value', snap => {
+        // check if the parent is already there
+        // if it is only update the student column
+        if (snap.val()) {
+          var studentsMap = snap.val().students;
+          studentsMap[student_id] = true;
+          return parentRef
+            .update({ students: studentsMap })
+            .then(() => {
+              //add to our fancy lookup map
+              return fire
+                .database()
+                .ref('/emailToUId/' + student.email_parent.replace('.', ','))
+                .set(parent_id);
+            })
+            .then(() => {
+              res({ student_id: student_id, parent_id: parent_id });
+            });
+        }
 
-      // if the parent doesnt alreadt exist :
-      var s = {};
-      s[student_id] = true;
-      return parentRef
-        .set({
-          type: 'parent',
-          student: s,
-          email: student.email_parent,
-          name: 'Parent of ' + student.name
-        })
-        .then(() => {
-          res({ student_id: student_id, parent_id: parent_id });
-        })
-        .catch(error => rej(error));
-    });
+        // if the parent doesnt alreadt exist :
+        var s = {};
+        s[student_id] = true;
+        return parentRef
+          .set({
+            type: 'parent',
+            student: s,
+            email: student.email_parent,
+            name: 'Parent of ' + student.name
+          })
+          .then(() => {
+            res({ student_id: student_id, parent_id: parent_id });
+          })
+          .catch(error => rej(error));
+      });
+    }
   });
 };
 
