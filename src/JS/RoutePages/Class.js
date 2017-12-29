@@ -22,7 +22,11 @@ import {
   ModalFooter,
   ModalHeader,
   Progress,
-  Row
+  Row,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle
 } from 'reactstrap';
 import Link from 'valuelink';
 
@@ -32,58 +36,78 @@ export default class Class extends Component {
       addModuleModalOpen: false,
       name: '',
       teacherID: '',
-      students: {}
+      students: {},
+      classId: this.props.match.params.classid
     });
     // firebase listener init
     fire
       .database()
       .ref('/classes/' + this.props.match.params.classid)
       .on('value', snap => {
+        console.log('change');
         let className = snap.val().name;
-        console.log(className);
         let teacherID = snap.val().teacher;
         let studentsSnap = snap.val().students;
-        var studentPromises = [];
+        this.setState({
+          className: className,
+          teacherID: teacherID
+        });
+
         for (let s in studentsSnap) {
           fire
             .database()
             .ref('/users/' + s)
             .on('value', snapshot => {
+              console.log('stud change');
               let name = snapshot.val().name;
               let modulesSnap = snapshot.val().modules;
-              var MODULES = [];
-              var progress = 0.0;
-              var modCount = 0;
-              for (let k in modulesSnap) {
-                let m = modulesSnap[k];
-                modCount += 2; // 2 becuase video and quiz
-                let description = m['description'];
-                let title = m['name'];
-                let videoWatched = m['videoWatched'];
-                let quizTaken = m['quizTaken'];
-                if (videoWatched) progress++;
-                if (quizTaken) progress++;
-                let MODULE = {
-                  title: title,
-                  description: description,
-                  quizTaken: quizTaken,
-                  videoWatched: videoWatched
+              let email = snapshot.val().email;
+              let classes = snapshot.val().classes;
+              if (
+                Object.keys(classes).indexOf(this.props.match.params.classid) >
+                -1
+              ) {
+                var MODULES = [];
+                var progress = 0.0;
+                var modCount = 0;
+                for (let k in modulesSnap) {
+                  let m = modulesSnap[k];
+                  modCount += 2; // 2 becuase video and quiz
+                  let description = m['description'];
+                  let title = m['name'];
+                  let videoWatched = m['videoWatched'];
+                  let quizTaken = m['quizTaken'];
+                  if (videoWatched) progress++;
+                  if (quizTaken) progress++;
+                  let MODULE = {
+                    title: title,
+                    description: description,
+                    quizTaken: quizTaken,
+                    videoWatched: videoWatched
+                  };
+                  MODULES.push(MODULE);
+                }
+                let progressPercentage = progress / modCount * 100.0;
+                let STUDENT = {
+                  id: snapshot.key,
+                  name: name,
+                  progress: progressPercentage,
+                  modules: MODULES,
+                  email: email
                 };
-                MODULES.push(MODULE);
+                var students = this.state.students;
+                students[s] = STUDENT;
+
+                this.setState({
+                  students: students
+                });
+              } else {
+                var students = this.state.students;
+                delete students[s];
+                this.setState({
+                  students: students
+                });
               }
-              let progressPercentage = progress / modCount * 100.0;
-              let STUDENT = {
-                name: name,
-                progress: progressPercentage,
-                modules: MODULES
-              };
-              var students = this.state.students;
-              students[s] = STUDENT;
-              this.setState({
-                students: students,
-                className: className,
-                teacherId: teacherID
-              });
             });
         }
       });
@@ -106,6 +130,13 @@ export default class Class extends Component {
     this.setState({
       addModuleModalOpen: !this.state.addModuleModalOpen
     });
+  }
+
+  sortName(a, b) {
+    return a.name > b.name;
+  }
+  sortProgress(a, b) {
+    return a.progress > b.progress;
   }
 
   render() {
@@ -131,16 +162,17 @@ export default class Class extends Component {
 
         <h4> Students: </h4>
         <ListGroup>
-          {Object.values(this.state.students).map((student, i) => {
-            return (
-              <StudentListItem
-                key={i}
-                student={student.name}
-                progress={student.progress}
-                modules={student.modules}
-              />
-            );
-          })}
+          {Object.values(this.state.students)
+            .sort(this.sortName)
+            .map((student, i) => {
+              return (
+                <StudentListItem
+                  key={i}
+                  student={student}
+                  classId={this.state.classId}
+                />
+              );
+            })}
         </ListGroup>
         <div className="spacer" />
       </div>
@@ -244,13 +276,20 @@ class StudentListItem extends Component {
     super(props);
 
     this.state = {
-      collapse: false
+      collapse: false,
+      dropdownOpen: false
     };
   }
 
   toggle() {
     this.setState({
       collapse: !this.state.collapse
+    });
+  }
+
+  toggleDropDown() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
     });
   }
 
@@ -278,22 +317,33 @@ class StudentListItem extends Component {
               />
             </span>
           )}
-          <b className="head">{this.props.student}</b>
+          <b className="head">{this.props.student.name}</b>
           <br />
-          {this.props.progress + '% Complete'}
+          {this.props.student.progress + '% Complete'}
           <Progress
-            value={this.props.progress}
+            value={this.props.student.progress}
             color={
-              this.props.progress > 85
+              this.props.student.progress > 85
                 ? 'success'
-                : this.props.progress < 40 ? 'danger' : 'warning'
+                : this.props.student.progress < 40 ? 'danger' : 'warning'
             }
           />
         </ListGroupItem>
         <Collapse isOpen={this.state.collapse}>
           <Card>
             <CardBody>
-              {this.props.modules.map((module, i) => {
+              <div className="std-info-header">
+                <h4>Modules:</h4>
+                <div className="std-dropdown">
+                  <StudentDropDown
+                    toggle={() => this.toggleDropDown()}
+                    isOpen={this.state.dropdownOpen}
+                    class_id={this.props.classId}
+                    student={this.props.student}
+                  />
+                </div>
+              </div>
+              {this.props.student.modules.map((module, i) => {
                 let complete = module.videoWatched && module.quizTaken;
 
                 return (
@@ -328,3 +378,52 @@ class StudentListItem extends Component {
     );
   }
 }
+
+var StudentDropDown = ({ isOpen, toggle, student, class_id }) => {
+  function nudgeUser() {
+    // TODO: Need to register the users on the app on sign in and then we can access
+    //  those registration tokens to be able to send them notifications
+  }
+
+  function resendSetupEmail() {
+    fire
+      .auth()
+      .sendPasswordResetEmail(student.email)
+      .then(() => {})
+      .catch(error => {
+        alert(error);
+      });
+  }
+
+  function removeStudent() {
+    fire
+      .database()
+      .ref('/classes/' + class_id + '/students/' + student.id)
+      .set(null)
+      .then(() => {
+        fire
+          .database()
+          .ref('/users/' + student.id + '/classes/' + class_id)
+          .set(null);
+      })
+      .then(() => {
+        this;
+      });
+  }
+
+  return (
+    <Dropdown isOpen={isOpen} toggle={toggle}>
+      <DropdownToggle caret>Actions</DropdownToggle>
+      <DropdownMenu right>
+        <DropdownItem onClick={nudgeUser}>Nudge User</DropdownItem>
+        <DropdownItem onClick={resendSetupEmail}>
+          Resend Account Setup E-mail
+        </DropdownItem>
+        <DropdownItem divider />
+        <DropdownItem onClick={removeStudent} color="danger">
+          Remove User from Class
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
+};

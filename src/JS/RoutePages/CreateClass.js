@@ -26,6 +26,7 @@ export default class CreateClass extends Component {
 
     this.state = {
       shouldShowErrors: false,
+      submitting: false,
       className: '',
       students: [
         {
@@ -109,6 +110,11 @@ export default class CreateClass extends Component {
 
     var hasRegistrationErrors = false;
     var serverErrors = '';
+
+    // hide the create class button and show a loading gif or something
+    this.setState({
+      submitting: true
+    });
 
     // Create class: defined in utils... is a container for all the logic
     // necessary to upload and create a class
@@ -218,13 +224,17 @@ export default class CreateClass extends Component {
           <div className="error-message">
             {this.state.shouldShowErrors ? this.state.serverErrors || '' : ''}
           </div>
-          <Button
-            color="primary"
-            onClick={() => this.submitClass(classNameLink, studentLink)}
-          >
-            {' '}
-            Create Class{' '}
-          </Button>
+          {this.state.submitting ? (
+            'Creating your class...'
+          ) : (
+            <Button
+              color="primary"
+              onClick={() => this.submitClass(classNameLink, studentLink)}
+            >
+              {' '}
+              Create Class{' '}
+            </Button>
+          )}
         </div>
       );
     } else {

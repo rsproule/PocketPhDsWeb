@@ -1,34 +1,40 @@
 .spacer {
-	height: 500px;
+  height: 500px;
 }
 
 .student-item {
-	text-align: left;
-	margin-bottom: 10px;
+  text-align: left;
+  margin-bottom: 10px;
 }
 
 .head {
-	font-size: 18pt;
-
+  font-size: 18pt;
 }
-.flip-vertical   { -webkit-transform: matrix(1, 0, 0, -1, 0, 0) }
+.flip-vertical {
+  -webkit-transform: matrix(1, 0, 0, -1, 0, 0);
+}
 
 .class-header {
-	display: flex;
-	justify-content: space-between;
-	margin: 15px;
-
+  display: flex;
+  justify-content: space-between;
+  margin: 15px;
 }
 
-.module{
-	display: flex;
+.module {
+  display: flex;
 }
 
 .module .checkbox {
-	border: 1px solid black;
-	margin: auto 0;
-	
+  border: 1px solid black;
+  margin: auto 0;
+}
+.std-dropdown {
+  float: right;
 }
 
-
-
+.std-info-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
