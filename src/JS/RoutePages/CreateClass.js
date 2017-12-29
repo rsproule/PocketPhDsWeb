@@ -1,7 +1,7 @@
 import '../../CSS/createClass.css';
 
 import { Redirect } from 'react-router-dom';
-import { registerAllStudents } from '../utils.js';
+import { createClass } from '../utils.js';
 import { fire } from '../firebase.js';
 import React, { Component } from 'react';
 //bootstrap
@@ -110,65 +110,20 @@ export default class CreateClass extends Component {
     var hasRegistrationErrors = false;
     var serverErrors = '';
 
-    registerAllStudents({ students: this.state.students })
-      .then(students_parents_id_array => {
-        // upload the class to firebase in the teachers name
-        var newClassRef = fire
-          .database()
-          .ref('/classes/')
-          .push({
-            name: this.state.className,
-            teacher: fire.auth().currentUser.uid,
-
-            // HACK: This here is a little map reduce to get the student array
-            // to be in the form students : {{id : true}, {id2 : true}} just
-            // stare at it for a min and it will make sense
-            students: students_parents_id_array
-              .map(stud_par => {
-                var o = {};
-                o[stud_par['student']] = true;
-                return o;
-              })
-              .reduce((result, item) => {
-                var key = Object.keys(item)[0]; //first property:  id
-                result[key] = item[key]; // assign the second property: true
-                return result;
-              }, {})
-          })
-          .then(classSnap => {
-            let newClassId = classSnap.key;
-            // give the teacher the class
-            fire
-              .database()
-              .ref(
-                '/users/' +
-                  fire.auth().currentUser.uid +
-                  '/classes/' +
-                  newClassId
-              )
-              .set(true);
-
-            // give each student+parent the class + create chat for student with tutor
-            for (let student_parent_map in students_parents_id_array) {
-              let stud_id = student_parent_map['student'];
-              let parent_id = student_parent_map['parent'];
-
-              //set the student to have the class... parent gets it by transitivity
-              fire
-                .database()
-                .ref('/users/' + stud_id + '/classes/' + newClassId)
-                .set(true);
-            }
-          });
-      })
+    // Create class: defined in utils... is a container for all the logic
+    // necessary to upload and create a class
+    createClass({
+      className: this.state.className,
+      teacherId: fire.auth().currentUser.uid,
+      students: this.state.students
+    })
       .catch(error => {
-        alert(error);
         hasRegistrationErrors = true;
         serverErrors = error.message;
+        alert(error);
       })
       .then(() => {
-        alert('success?');
-
+        console.log('done');
         this.setState({
           registrationSuccess: !hasRegistrationErrors,
           shouldShowErrors: hasRegistrationErrors,
@@ -184,7 +139,6 @@ export default class CreateClass extends Component {
    */
   resendVerificationEmail() {
     if (fire.auth().currentUser.emailVerified) return;
-
     // send the verification email
     fire
       .auth()

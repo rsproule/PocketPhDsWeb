@@ -32,68 +32,57 @@ export default class Class extends Component {
       addModuleModalOpen: false,
       name: '',
       teacherID: '',
-      students: []
+      students: {}
     });
-
     // firebase listener init
     fire
       .database()
       .ref('/classes/' + this.props.match.params.classid)
       .on('value', snap => {
         let className = snap.val().name;
+        console.log(className);
         let teacherID = snap.val().teacher;
         let studentsSnap = snap.val().students;
-
+        var studentPromises = [];
         for (let s in studentsSnap) {
           fire
             .database()
-            .ref('/students/' + s)
+            .ref('/users/' + s)
             .on('value', snapshot => {
-              var students = [];
-
               let name = snapshot.val().name;
               let modulesSnap = snapshot.val().modules;
-
               var MODULES = [];
-
               var progress = 0.0;
               var modCount = 0;
               for (let k in modulesSnap) {
                 let m = modulesSnap[k];
-
                 modCount += 2; // 2 becuase video and quiz
-
                 let description = m['description'];
                 let title = m['name'];
                 let videoWatched = m['videoWatched'];
                 let quizTaken = m['quizTaken'];
-
                 if (videoWatched) progress++;
                 if (quizTaken) progress++;
-
                 let MODULE = {
                   title: title,
                   description: description,
                   quizTaken: quizTaken,
                   videoWatched: videoWatched
                 };
-
                 MODULES.push(MODULE);
               }
-
               let progressPercentage = progress / modCount * 100.0;
               let STUDENT = {
                 name: name,
                 progress: progressPercentage,
                 modules: MODULES
               };
-
-              students.push(STUDENT);
-
+              var students = this.state.students;
+              students[s] = STUDENT;
               this.setState({
+                students: students,
                 className: className,
-                teacherID: teacherID,
-                students: students
+                teacherId: teacherID
               });
             });
         }
@@ -142,7 +131,7 @@ export default class Class extends Component {
 
         <h4> Students: </h4>
         <ListGroup>
-          {this.state.students.map((student, i) => {
+          {Object.values(this.state.students).map((student, i) => {
             return (
               <StudentListItem
                 key={i}
