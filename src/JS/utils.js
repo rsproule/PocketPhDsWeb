@@ -120,10 +120,10 @@ var registerAllStudents = ({ students }) => {
         secondaryFire.delete(); // not sure if this is necessary... it is :)
         var student_parent_arr = [];
         res.forEach(r => {
-          // TODO: create a map of the {student_id : parent_id}
-          student_parent_arr.push(r);
+          if (r.student_id || r.parent_id) {
+            student_parent_arr.push(r);
+          }
         });
-        // TODO: resolve with the map or array whatever
         resolveReg(student_parent_arr);
       })
       .catch(error => alert(error));
@@ -155,16 +155,31 @@ var createStudent = ({ student, secondaryFire }) => {
       .catch(error => {
         // TODO: in case where email is already in use we should do something else
         if (error.code === 'auth/email-already-in-use') {
-          //secondaryFire.delete(); <-- dont need this anymore because it reflow normally and eventually be destroyed
+          // get the user id of the email that was already in use
           fire
             .database()
             .ref('/emailToUId/' + student.email_student.replace('.', ','))
             .once('value', snap => {
-              resolve({
-                student_id: snap.val(),
-                student: student,
-                cancelUpload: true
-              });
+              // check to make sure that user is of the same type... we cant have
+              // the same email tied to different account types
+              fire
+                .database()
+                .ref('/users/' + snap.val() + '/type')
+                .once('value', s => {
+                  if (s.val() != 'student') {
+                    alert(
+                      'This email is already in use by a non-student account. Account cannot be created: ' +
+                        student.email_student
+                    );
+                    resolve({ cancelUpload: true });
+                  } else {
+                    resolve({
+                      student_id: snap.val(),
+                      student: student,
+                      cancelUpload: true
+                    });
+                  }
+                });
             });
         } else {
           reject(error);
@@ -175,6 +190,9 @@ var createStudent = ({ student, secondaryFire }) => {
 
 var createParent = ({ student_id, student, secondaryFire }) => {
   return new Promise((resolve, reject) => {
+    if (!student_id) {
+      resolve({ cancelUpload: true });
+    }
     //generate random password by converting random number to base 36, then concat
     // two of them together to get a 12 character string
     var password =
@@ -207,12 +225,27 @@ var createParent = ({ student_id, student, secondaryFire }) => {
             .database()
             .ref('/emailToUId/' + student.email_parent.replace('.', ','))
             .once('value', snap => {
-              resolve({
-                parent_id: snap.val(),
-                student: student,
-                student_id: student_id,
-                cancelUpload: true
-              });
+              // check to make sure that user is of the same type... we cant have
+              // the same email tied to different account types
+              fire
+                .database()
+                .ref('/users/' + snap.val() + '/type')
+                .once('value', s => {
+                  if (s.val() != 'parent') {
+                    alert(
+                      'This email is already in use by a non-parent account. Account cannot be created: ' +
+                        student.email_parent
+                    );
+                    resolve({ cancelUpload: true });
+                  } else {
+                    resolve({
+                      parent_id: snap.val(),
+                      student_id: student_id,
+                      student: student,
+                      cancelUpload: true
+                    });
+                  }
+                });
             });
         } else {
           reject(error);
