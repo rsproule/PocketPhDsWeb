@@ -119,8 +119,8 @@ export default class Register extends Component {
       return <Redirect to={'account/' + this.state.accountId} />;
     }
 
-    // email regular expression... tested against 10,000 emails 100% success rate... still not sure
-    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // email regular expression... matches the regex that firebase uses to test formatting
+    const re = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$/i;
 
     const emailLink = Link.state(this, 'email')
       .check(x => x, 'Email is Required')
