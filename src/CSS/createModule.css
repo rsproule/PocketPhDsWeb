@@ -1,0 +1,15 @@
+.create-module-wrapper {
+  padding: 30px;
+  border-top: solid lightgrey 1px;
+  text-align: left;
+}
+
+.add-class-button {
+  padding: 10px;
+
+  margin-bottom: 10px;
+}
+
+.question-wrapper {
+  padding: 20px;
+}

@@ -6,6 +6,7 @@ import NavLink from './navlink.js';
 import Account from './RoutePages/Account.js';
 import Class from './RoutePages/Class.js';
 import CreateClass from './RoutePages/CreateClass.js';
+import CreateModule from './RoutePages/CreateModule.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -37,6 +38,10 @@ const Contact = () => <div>contact</div>;
 
 const EditAccount = () => <div>Edit the account here</div>;
 
+const AddTutor = () => <div>Add Tutor</div>;
+
+const AssignTutor = () => <div> Assign Tutor </div>;
+
 const PrivateRoute = ({ component: Component, auth, loading, ...rest }) => (
   <Route
     {...rest}
@@ -63,6 +68,43 @@ const PrivateRoute = ({ component: Component, auth, loading, ...rest }) => (
     }}
   />
 );
+
+const AdminRoute = ({ component: Component, auth, loading, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={props => {
+        const { from } = props.location.state || {
+          from: { pathname: '/login' }
+        };
+
+        if (!loading) {
+          return fire.auth().currentUser ? (
+            fire.auth().currentUser.uid === '62NYU9arTleg2awTsWdUqdLzizD2' ? (
+              <Component {...props} />
+            ) : (
+              <Redirect to={from} />
+            )
+          ) : (
+            <Redirect
+              to={{
+                pathname: '/login',
+                state: { from: props.location }
+              }}
+            />
+          );
+        } else {
+          return (
+            <div>
+              <div> Fetching User Data... </div>
+              <div className="spacer" />
+            </div>
+          );
+        }
+      }}
+    />
+  );
+};
 
 class Routes extends Component {
   constructor(props) {
@@ -302,6 +344,24 @@ class Routes extends Component {
             loading={this.state.loadingUser}
             path="/create-class"
             component={CreateClass}
+          />
+          <AdminRoute
+            auth={this.state.isLoggedIn}
+            loading={this.state.loadingUser}
+            path="/account/add-tutor"
+            component={AddTutor}
+          />
+          <AdminRoute
+            auth={this.state.isLoggedIn}
+            loading={this.state.loadingUser}
+            path="/account/create-module"
+            component={CreateModule}
+          />
+          <AdminRoute
+            auth={this.state.isLoggedIn}
+            loading={this.state.loadingUser}
+            path="/account/assign-tutor"
+            component={AssignTutor}
           />
         </div>
       </Router>

@@ -16,6 +16,7 @@ export default class Account extends Component {
       //user info
       name: 'Loading...',
       email: 'Loading...',
+      type: null,
       school: false,
       profile_url: false,
       classes: {},
@@ -23,7 +24,9 @@ export default class Account extends Component {
       //meta
       loaded: false,
 
-      tooltipOpen: false
+      tooltipOpen: false,
+
+      currentTab: ''
     };
   }
 
@@ -72,6 +75,7 @@ export default class Account extends Component {
               let classes = snap.val().classes;
               let profile_url = snap.val().profile;
               let bio = snap.val().bio;
+              let type = snap.val().type;
 
               this.setState({
                 name: name,
@@ -80,6 +84,7 @@ export default class Account extends Component {
                 classes: classes,
                 profile_url: profile_url,
                 bio: bio,
+                type: type,
 
                 loaded: true
               });
@@ -116,7 +121,25 @@ export default class Account extends Component {
     });
   }
 
+  tabClicked(tab) {
+    this.setState({
+      currentTab: tab
+    });
+  }
+
   render() {
+    // if(this.state.loaded) {
+    //   if(this.state.type == 'student' || this.state.type == 'parent'){
+    //     return (
+    //       <div >
+    //         <center>
+    //           Pocket PhDs Web Version is not available for studen
+    //         </center>
+    //       </div>
+    //     )
+    //   }
+    // }
+
     return (
       <div>
         {// need to make sure we have this guy before we do anything
@@ -182,12 +205,73 @@ export default class Account extends Component {
                 </Col>
               </Row>
             </div>
+            {this.state.type === 'teacher' ? (
+              <div>
+                <div className="account-tabs">
+                  <a className="activeTab">Classes</a>
+                </div>
+                <ClassList classes={this.state.classes} />
+              </div>
+            ) : null}
 
-            <div className="account-tabs">
-              <a className="activeTab">Classes</a>
-              <a>Chats</a>
-            </div>
-            <ClassList classes={this.state.classes} />
+            {// Tutor version
+            this.state.type === 'tutor' ? (
+              <div>
+                <div className="account-tabs">
+                  <a className="activeTab">Chats</a>
+                </div>
+
+                <div>To chat use the mobile app.</div>
+              </div>
+            ) : null}
+            {// Student or parent
+            this.state.type === 'student' || this.state.type === 'parent' ? (
+              <div>
+                <div className="account-tabs">
+                  <a className="activeTab">Classes</a>
+                  <a>Chats</a>
+                </div>
+
+                <div>To chat use the mobile app.</div>
+              </div>
+            ) : null}
+
+            {this.state.type === 'admin' ? (
+              <div>
+                <div className="account-tabs">
+                  <Link
+                    to="/account/add-tutor"
+                    onClick={() => this.tabClicked('add-tutor')}
+                    className={
+                      this.state.currentTab == 'add-tutor' ? 'activeTab' : ''
+                    }
+                  >
+                    Add Tutor
+                  </Link>
+                  <Link
+                    to="/account/assign-tutor"
+                    onClick={() => this.tabClicked('assign-tutor')}
+                    className={
+                      this.state.currentTab == 'assign-tutor' ? 'activeTab' : ''
+                    }
+                  >
+                    Assign Tutor
+                  </Link>
+                  <Link
+                    to="/account/create-module"
+                    onClick={() => this.tabClicked('create-module')}
+                    className={
+                      this.state.currentTab == 'create-module'
+                        ? 'activeTab'
+                        : ''
+                    }
+                  >
+                    {' '}
+                    Create Module{' '}
+                  </Link>
+                </div>
+              </div>
+            ) : null}
           </div>
         ) : (
           <div>

@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bootstrap": "^4.0.0-beta.2",
-    "firebase": "^4.8.0",
+    "bootstrap": "^4.0.0-beta.3",
+    "firebase": "^4.8.1",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
     "prettier": "^1.9.2",
     "react": "^16.2.0",
-    "react-dom": "^16.0.0",
+    "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "reactstrap": "^5.0.0-alpha.4"
   },
@@ -18,11 +18,11 @@
     "valuelink": "^1.5.4"
   },
   "lint-staged": {
-   "src/**/*.{js,jsx,json,css}": [
-     "prettier --single-quote --write",
-     "git add"
-   ]
- },
+    "src/**/*.{js,jsx,json,css}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
+  },
   "scripts": {
     "precommit": "lint-staged",
     "start": "react-scripts start",

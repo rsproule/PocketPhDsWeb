@@ -1,5 +1,7 @@
 import '../../CSS/homepage.css';
 
+import Footer from '../Footer.js';
+
 import plogo from '../../Logos/PocketPhDsLogo.JPG';
 import React, { Component } from 'react';
 //bootstrap
@@ -83,6 +85,7 @@ class Home extends Component {
             </div>
           </Jumbotron>
         </div>
+        <Footer />
       </div>
     );
   }
