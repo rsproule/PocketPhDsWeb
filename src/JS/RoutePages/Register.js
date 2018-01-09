@@ -87,7 +87,8 @@ export default class Register extends Component {
                   name: fire.auth().currentUser.displayName,
                   email: this.state.email,
                   school: '',
-                  classes: {}
+                  classes: {},
+                  subscriptionLevel: 0
                 })
                 .catch(error => alert(error))
                 .then(() => {
@@ -141,7 +142,7 @@ export default class Register extends Component {
         <div>
           <h2> Welcome to Pocket PhDs! </h2>
           <p>
-            Create an account to create classes and monitor your students
+            Create a teacher account to create classes and monitor your students
             progress.
           </p>
         </div>

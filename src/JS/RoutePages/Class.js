@@ -11,24 +11,18 @@ import {
   CardSubtitle,
   CardText,
   CardTitle,
-  Col,
   Collapse,
-  Container,
-  Input,
   ListGroup,
   ListGroupItem,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Progress,
-  Row,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownToggle
 } from 'reactstrap';
-import Link from 'valuelink';
+import { Redirect } from 'react-router-dom';
+
+import ModuleModal from './AssignModule.js';
 
 export default class Class extends Component {
   componentWillMount() {
@@ -44,10 +38,18 @@ export default class Class extends Component {
       .database()
       .ref('/classes/' + this.props.match.params.classid)
       .on('value', snap => {
-        console.log('change');
         let className = snap.val().name;
         let teacherID = snap.val().teacher;
         let studentsSnap = snap.val().students;
+
+        if (teacherID !== fire.auth().currentUser.uid) {
+          this.setState({
+            exit: true
+          });
+          alert('Not your class');
+          //return;
+        }
+
         this.setState({
           className: className,
           teacherID: teacherID
@@ -58,9 +60,9 @@ export default class Class extends Component {
             .database()
             .ref('/users/' + s)
             .on('value', snapshot => {
-              console.log('stud change');
               let name = snapshot.val().name;
               let modulesSnap = snapshot.val().modules;
+              let notificationToken = snapshot.val().notificationToken;
               let email = snapshot.val().email;
               let classes = snapshot.val().classes;
               if (
@@ -68,32 +70,47 @@ export default class Class extends Component {
                 -1
               ) {
                 var MODULES = [];
-                var progress = 0.0;
-                var modCount = 0;
+                var totalQuestions = 0;
+                var totalAnswered = 0;
                 for (let k in modulesSnap) {
+                  var questionsAnsweredCount = 0;
                   let m = modulesSnap[k];
-                  modCount += 2; // 2 becuase video and quiz
                   let description = m['description'];
-                  let title = m['name'];
+                  let title = m['title'];
+                  let name = m['name'];
                   let videoWatched = m['videoWatched'];
+                  if (videoWatched) questionsAnsweredCount++;
                   let quizTaken = m['quizTaken'];
-                  if (videoWatched) progress++;
-                  if (quizTaken) progress++;
+                  var responses = [];
+                  var numQuestions = m['questionCount'];
+                  for (let question in m['responses']) {
+                    questionsAnsweredCount++;
+                    responses.push({
+                      question: question,
+                      response: m['responses'][question]
+                    });
+                  }
+
                   let MODULE = {
+                    name: name,
                     title: title,
                     description: description,
                     quizTaken: quizTaken,
-                    videoWatched: videoWatched
+                    videoWatched: videoWatched,
+                    responses: responses
                   };
                   MODULES.push(MODULE);
+                  totalAnswered += questionsAnsweredCount;
+                  totalQuestions += numQuestions + 1; // plus on to account for video
                 }
-                let progressPercentage = progress / modCount * 100.0;
+                let progress = totalAnswered / totalQuestions * 100.0;
                 let STUDENT = {
                   id: snapshot.key,
                   name: name,
-                  progress: progressPercentage,
+                  progress: progress,
                   modules: MODULES,
-                  email: email
+                  email: email,
+                  notificationToken: notificationToken
                 };
                 var students = this.state.students;
                 students[s] = STUDENT;
@@ -102,7 +119,7 @@ export default class Class extends Component {
                   students: students
                 });
               } else {
-                var students = this.state.students;
+                students = this.state.students;
                 delete students[s];
                 this.setState({
                   students: students
@@ -140,6 +157,10 @@ export default class Class extends Component {
   }
 
   render() {
+    if (this.state.exit) {
+      return <Redirect to="/account" />;
+    }
+
     return (
       <div>
         <div className="class-header">
@@ -157,6 +178,7 @@ export default class Class extends Component {
           <ModuleModal
             addModuleModalOpen={this.state.addModuleModalOpen}
             toggleModal={this.toggleModal.bind(this)}
+            classId={this.props.match.params.classid}
           />
         </div>
 
@@ -180,104 +202,14 @@ export default class Class extends Component {
   }
 }
 
-class ModuleModal extends Component {
-  componentWillMount() {
-    //create module observer
-
-    this.setState({
-      modules: []
-    });
-
-    fire
-      .database()
-      .ref('/modules')
-      .once('value', snapList => {
-        snapList.forEach(snap => {
-          let name = snap.val().name;
-          let title = snap.val().title;
-          let description = snap.val().description;
-
-          this.setState({
-            modules: this.state.modules.concat([
-              {
-                name: name,
-                title: title,
-                description: description,
-                selected: false
-              }
-            ])
-          });
-        });
-      });
-  }
-
-  componentWillUnmount() {
-    fire
-      .database()
-      .ref('/modules')
-      .off();
-  }
-
-  render() {
-    const modulesLink = Link.state(this, 'modules');
-
-    return (
-      <Modal
-        isOpen={this.props.addModuleModalOpen}
-        toggle={this.props.toggleModal}
-      >
-        <ModalHeader toggle={this.props.toggleModal}>
-          Pocket PhD Modules
-        </ModalHeader>
-        <ModalBody>
-          <ListGroup>
-            {modulesLink.map((modLink, i) => {
-              return (
-                <ListGroupItem
-                  key={i}
-                  action
-                  onClick={() => {
-                    modLink.at('selected').set(!modLink.at('selected').value);
-                  }}
-                >
-                  <div className="module">
-                    <Input
-                      type="checkbox"
-                      checked={modLink.at('selected').value}
-                    />
-
-                    <div>
-                      <b>{modLink.at('name').value}</b>
-                      {' - ' + modLink.at('title').value}
-                      <br />
-                      {modLink.at('description').value}
-                    </div>
-                  </div>
-                </ListGroupItem>
-              );
-            })}
-          </ListGroup>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.props.toggleModal}>
-            Assign Modules
-          </Button>{' '}
-          <Button color="secondary" onClick={this.props.toggleModal}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
-    );
-  }
-}
-
 class StudentListItem extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       collapse: false,
-      dropdownOpen: false
+      dropdownOpen: false,
+      nestedCollapse: {}
     };
   }
 
@@ -291,6 +223,18 @@ class StudentListItem extends Component {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
     });
+  }
+
+  toggleNested(index) {
+    if (this.state.nestedCollapse[index]) {
+      var dummyState = this.state;
+      dummyState.nestedCollapse[index] = !this.state.nestedCollapse[index];
+      this.setState(dummyState);
+    } else {
+      dummyState = this.state;
+      dummyState.nestedCollapse[index] = true;
+      this.setState(dummyState);
+    }
   }
 
   render() {
@@ -350,7 +294,7 @@ class StudentListItem extends Component {
                   <Card key={i}>
                     <CardBody>
                       <CardTitle>
-                        {module.title + '   -   '}
+                        {module.name + '   -   '}
 
                         {complete ? (
                           <Badge color="success"> Complete </Badge>
@@ -358,13 +302,44 @@ class StudentListItem extends Component {
                           <Badge color="danger"> Incomplete </Badge>
                         )}
                       </CardTitle>
-                      <CardSubtitle>{module.description}</CardSubtitle>
-                      <CardText>
-                        Here there will be a little more info about the module
-                      </CardText>
-                      <Button disabled={!complete} color="primary">
+                      <CardSubtitle>{module.title}</CardSubtitle>
+                      <CardText>{module.description}</CardText>
+                      <Button
+                        disabled={!complete}
+                        onClick={() => this.toggleNested(i)}
+                        color="primary"
+                      >
                         View Responses
                       </Button>
+                      <Collapse
+                        isOpen={
+                          this.state.collapse && this.state.nestedCollapse[i]
+                        }
+                      >
+                        {module.responses.map((resp, ind) => {
+                          var response = resp.response;
+                          if (
+                            resp.response !== null &&
+                            typeof resp.response === 'object'
+                          ) {
+                            var r = '';
+                            for (let k in resp.response) {
+                              if (resp.response[k]) {
+                                r += k + ' ';
+                              }
+                            }
+                            response = r;
+                          }
+
+                          return (
+                            <div key={ind}>
+                              {Number(resp.question) + 1 + ': ' + response}
+                            </div>
+                          );
+
+                          //return (resp)
+                        })}
+                      </Collapse>
                     </CardBody>
                   </Card>
                 );
@@ -383,13 +358,32 @@ var StudentDropDown = ({ isOpen, toggle, student, class_id }) => {
   function nudgeUser() {
     // TODO: Need to register the users on the app on sign in and then we can access
     //  those registration tokens to be able to send them notifications
+    if (student.notificationToken) {
+      var URL = 'https://us-central1-pocket-phds.cloudfunctions.net/sendNudge';
+
+      var xhttp = new XMLHttpRequest();
+
+      xhttp.open('POST', URL, true);
+      xhttp.setRequestHeader('Content-type', 'application/json');
+      var data = JSON.stringify({ token: student.notificationToken });
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState === 4 && xhttp.status === 200) {
+          alert('Nudge Sent Successfully');
+        }
+      };
+      xhttp.send(data);
+    } else {
+      alert('This user has not installed Pocket PhDs on a device.');
+    }
   }
 
   function resendSetupEmail() {
     fire
       .auth()
       .sendPasswordResetEmail(student.email)
-      .then(() => {})
+      .then(() => {
+        alert('Sent E-mail to: ' + student.email);
+      })
       .catch(error => {
         alert(error);
       });
@@ -407,7 +401,7 @@ var StudentDropDown = ({ isOpen, toggle, student, class_id }) => {
           .set(null);
       })
       .then(() => {
-        this;
+        alert('Student deleted');
       });
   }
 

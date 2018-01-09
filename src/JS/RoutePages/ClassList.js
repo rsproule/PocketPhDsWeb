@@ -2,9 +2,9 @@ import '../../CSS/classes.css';
 
 import { fire } from '../firebase.js';
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 //bootstrap
-import { Button, ListGroup, ListGroupItem, Table } from 'reactstrap';
+import { Button, ListGroup, ListGroupItem } from 'reactstrap';
 
 export default class ClassList extends Component {
   componentWillMount() {

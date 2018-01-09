@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { fire } from '../firebase.js';
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../CSS/account.css';
 import ClassList from './ClassList.js';
 
-import { Container, Row, Col, Badge, Tooltip, Button } from 'reactstrap';
+import { Row, Col, Badge, Tooltip } from 'reactstrap';
 
 export default class Account extends Component {
   constructor(props) {
@@ -243,7 +243,7 @@ export default class Account extends Component {
                     to="/account/add-tutor"
                     onClick={() => this.tabClicked('add-tutor')}
                     className={
-                      this.state.currentTab == 'add-tutor' ? 'activeTab' : ''
+                      this.state.currentTab === 'add-tutor' ? 'activeTab' : ''
                     }
                   >
                     Add Tutor
@@ -252,7 +252,9 @@ export default class Account extends Component {
                     to="/account/assign-tutor"
                     onClick={() => this.tabClicked('assign-tutor')}
                     className={
-                      this.state.currentTab == 'assign-tutor' ? 'activeTab' : ''
+                      this.state.currentTab === 'assign-tutor'
+                        ? 'activeTab'
+                        : ''
                     }
                   >
                     Assign Tutor
@@ -261,7 +263,7 @@ export default class Account extends Component {
                     to="/account/create-module"
                     onClick={() => this.tabClicked('create-module')}
                     className={
-                      this.state.currentTab == 'create-module'
+                      this.state.currentTab === 'create-module'
                         ? 'activeTab'
                         : ''
                     }

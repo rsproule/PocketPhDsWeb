@@ -1,18 +1,6 @@
 import React, { Component } from 'react';
 //bootstrap
-import {
-  Alert,
-  Button,
-  Card,
-  Col,
-  Form,
-  FormGroup,
-  FormText,
-  Input,
-  Jumbotron,
-  Label,
-  Row
-} from 'reactstrap';
+import { Button, Card, Col, FormGroup, Input, Label, Row } from 'reactstrap';
 
 export default class QuestionInput extends Component {
   render() {
@@ -31,6 +19,8 @@ export default class QuestionInput extends Component {
         case '1': // select
           return x.length > 0;
         case '2':
+          return true;
+        default:
           return true;
       }
     }, 'Options are required');
@@ -66,7 +56,7 @@ export default class QuestionInput extends Component {
           </FormGroup>
 
           <Label>Question Type: </Label>
-          <FormGroup tag="radio" style={{ 'text-align': 'center' }}>
+          <FormGroup tag="radio" style={{ textAlign: 'center' }}>
             <div className="error-message">
               {this.props.shouldShowErrors ? typeLink.error || '' : ''}
             </div>
@@ -130,7 +120,7 @@ export default class QuestionInput extends Component {
                 const optionValueLink = optionLink
                   .at('option')
                   .check(
-                    x => x || typeLink.value == '2',
+                    x => x || typeLink.value === '2',
                     "Option can't be blank"
                   );
 

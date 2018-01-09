@@ -5,31 +5,30 @@ var createClass = ({ className, teacherId, students }) => {
     registerAllStudents({ students: students }).then(
       students_parents_id_array => {
         // upload the class to firebase in the teachers name
-        console.log(students_parents_id_array);
+        // HACK: This here is a little map reduce to get the student array
+        // to be in the form students : {{id : true}, {id2 : true}} just
+        // stare at it for a min and it will make sense
+        let students = students_parents_id_array
+          .map(stud_par => {
+            var o = {};
+            o[stud_par['student']] = true;
+            return o;
+          })
+          .reduce((result, item) => {
+            var key = Object.keys(item)[0]; //first property:  id
+            result[key] = item[key]; // assign the second property: true
+            return result;
+          }, {});
+
         return fire
           .database()
           .ref('/classes/')
           .push({
             name: className,
             teacher: fire.auth().currentUser.uid,
-            // HACK: This here is a little map reduce to get the student array
-            // to be in the form students : {{id : true}, {id2 : true}} just
-            // stare at it for a min and it will make sense
-            students: students_parents_id_array
-              .map(stud_par => {
-                var o = {};
-                o[stud_par['student']] = true;
-                return o;
-              })
-              .reduce((result, item) => {
-                var key = Object.keys(item)[0]; //first property:  id
-                result[key] = item[key]; // assign the second property: true
-                return result;
-              }, {})
+            students: students
           })
           .then(classSnap => {
-            console.log('here');
-            console.log(students_parents_id_array);
             let newClassId = classSnap.key;
             var allStudentsPromises = [];
             // give the teacher the class
@@ -47,8 +46,10 @@ var createClass = ({ className, teacherId, students }) => {
             // give each student+parent the class + create chat for student with tutor
             for (let i in students_parents_id_array) {
               let stud_id = students_parents_id_array[i]['student'];
-              let parent_id = students_parents_id_array[i]['parent'];
+              //let parent_id = students_parents_id_array[i]['parent'];
               //set the student to have the class... parent gets it by transitivity
+              /*jshint loopfunc: true */
+
               allStudentsPromises.push(
                 fire
                   .database()
@@ -70,13 +71,15 @@ var createClass = ({ className, teacherId, students }) => {
 var registerAllStudents = ({ students }) => {
   return new Promise((resolveReg, rejectReg) => {
     var promiseArray = [];
-    var students_id_array = [];
+    //  var students_id_array = [];
     var secondaryFire = initSecondary();
 
     // TODO: send emails to all the students to invite them to join the class:
     //  complete registration and download the app
     for (var student in students) {
       student = students[student];
+      /*jshint loopfunc: true */
+
       promiseArray.push(
         //create the student
         createStudent({
@@ -111,6 +114,7 @@ var registerAllStudents = ({ students }) => {
               student: student_id,
               parent: parent_id
             };
+
             return m;
           })
       );
@@ -119,11 +123,14 @@ var registerAllStudents = ({ students }) => {
       .then(res => {
         secondaryFire.delete(); // not sure if this is necessary... it is :)
         var student_parent_arr = [];
+
         res.forEach(r => {
-          if (r.student_id || r.parent_id) {
-            student_parent_arr.push(r);
-          }
+          // why am i doing this check?
+          // if (r.student_id || r.parent_id) {
+          student_parent_arr.push(r);
+          // }
         });
+
         resolveReg(student_parent_arr);
       })
       .catch(error => alert(error));
@@ -166,7 +173,7 @@ var createStudent = ({ student, secondaryFire }) => {
                 .database()
                 .ref('/users/' + snap.val() + '/type')
                 .once('value', s => {
-                  if (s.val() != 'student') {
+                  if (s.val() !== 'student') {
                     alert(
                       'This email is already in use by a non-student account. Account cannot be created: ' +
                         student.email_student
@@ -231,7 +238,7 @@ var createParent = ({ student_id, student, secondaryFire }) => {
                 .database()
                 .ref('/users/' + snap.val() + '/type')
                 .once('value', s => {
-                  if (s.val() != 'parent') {
+                  if (s.val() !== 'parent') {
                     alert(
                       'This email is already in use by a non-parent account. Account cannot be created: ' +
                         student.email_parent
@@ -267,18 +274,18 @@ var uploadStudentToDatabase = ({ student, student_id, cancelUpload }) => {
       resolveUpload({ student_id: student_id, student: student });
     } else {
       //create chat for student
-      var chatRef = fire
+      fire
         .database()
         .ref('chats')
         .push({
-          name: 'Brain Coach Chat',
+          name: student.name + "'s Brain Coach Chat",
           lastMessage: 'Welcome to Pocket Phds',
           timestamp: +new Date(),
-          image: 'http://52.14.73.202/~rsproule/pocketPhDsLogo.png'
+          isActive: false,
+          type: 'student'
         })
         .then(chatSnap => {
           // add user to the database
-          console.log(student);
           return fire
             .database()
             .ref('/users/' + student_id)
@@ -290,14 +297,7 @@ var uploadStudentToDatabase = ({ student, student_id, cancelUpload }) => {
               classes: {},
               // give them the starter module
               modules: {
-                module1: {
-                  description: 'Welcome to Pocket PhDs',
-                  isUnlocked: true,
-                  name: 'Module 1',
-                  nextModule: 'module2',
-                  videoWatched: false,
-                  quizTaken: false
-                }
+                //nvm
               }
             });
         })
@@ -352,19 +352,36 @@ var uploadParentToDatabase = ({
         }
 
         // if the parent doesnt alreadt exist :
-        var s = {};
-        s[student_id] = true;
-        return parentRef
-          .set({
-            type: 'parent',
-            student: s,
-            email: student.email_parent,
-            name: 'Parent of ' + student.name
-          })
-          .then(() => {
-            res({ student_id: student_id, parent_id: parent_id });
-          })
-          .catch(error => rej(error));
+
+        // 1 create a chat
+        return (
+          fire
+            .database()
+            .ref('chats')
+            .push({
+              name: student.name + "'s Parent Chat",
+              lastMessage: 'Welcome to Pocket Phds',
+              timestamp: +new Date(),
+              isActive: false,
+              type: 'parent'
+            })
+            // 2 add to database
+            .then(chatSnap => {
+              var s = {};
+              s[student_id] = true;
+              return parentRef.set({
+                type: 'parent',
+                student: s,
+                email: student.email_parent,
+                name: 'Parent of ' + student.name,
+                chat: chatSnap.key
+              });
+            })
+            .then(() => {
+              res({ student_id: student_id, parent_id: parent_id });
+            })
+            .catch(error => rej(error))
+        );
       });
     }
   });

@@ -1,9 +1,9 @@
 import '../../CSS/createClass.css';
 
-import { Redirect } from 'react-router-dom';
-import { createClass } from '../utils.js';
 import { fire } from '../firebase.js';
+import { createClass } from '../utils.js';
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 //bootstrap
 import {
   Alert,
@@ -12,7 +12,6 @@ import {
   Col,
   Form,
   FormGroup,
-  FormText,
   Input,
   Jumbotron,
   Label,
@@ -108,6 +107,7 @@ export default class CreateClass extends Component {
 
       studentsContainErrors =
         nameLink.error || emailLink1.error || emailLink2.error;
+      return studentsContainErrors;
     });
 
     //make sure the form is all good
@@ -139,7 +139,6 @@ export default class CreateClass extends Component {
         alert(error);
       })
       .then(() => {
-        console.log('done');
         this.setState({
           registrationSuccess: !hasRegistrationErrors,
           shouldShowErrors: hasRegistrationErrors,

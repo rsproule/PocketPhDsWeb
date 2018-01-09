@@ -4,9 +4,11 @@ import plogo from '../Logos/PocketPhDsLogo(no_text).JPG';
 import { fire } from './firebase.js';
 import NavLink from './navlink.js';
 import Account from './RoutePages/Account.js';
+import AddTutor from './RoutePages/AddTutor.js';
 import Class from './RoutePages/Class.js';
 import CreateClass from './RoutePages/CreateClass.js';
 import CreateModule from './RoutePages/CreateModule.js';
+import AssignTutor from './RoutePages/AssignTutor.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -37,10 +39,6 @@ const FAQ = () => <div>FAQ</div>;
 const Contact = () => <div>contact</div>;
 
 const EditAccount = () => <div>Edit the account here</div>;
-
-const AddTutor = () => <div>Add Tutor</div>;
-
-const AssignTutor = () => <div> Assign Tutor </div>;
 
 const PrivateRoute = ({ component: Component, auth, loading, ...rest }) => (
   <Route

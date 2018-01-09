@@ -4,15 +4,12 @@ import QuestionInput from './Question.js';
 import { fire } from '../firebase.js';
 //bootstrap
 import {
-  Alert,
   Button,
   Card,
   Col,
   Form,
   FormGroup,
-  FormText,
   Input,
-  Jumbotron,
   Label,
   Row,
   Progress
@@ -27,6 +24,7 @@ export default class CreateModule extends Component {
       shouldShowErrors: false,
       isSubmitting: false,
 
+      subscriptionLevel: -1,
       name: '',
       title: '',
       description: '',
@@ -60,18 +58,22 @@ export default class CreateModule extends Component {
             return x.length > 0;
           case '2':
             return true;
+          default:
+            return true;
         }
       }, 'Options are required');
 
       optionsLink.map((o, ind) => {
         const oLink = o.check(
-          x => x || typeLink.value == '2',
+          x => x || typeLink.value === '2',
           'Option Required'
         );
 
         formContainsErrors =
           qLink.error || typeLink.error || optionsLink.error || oLink.error;
+        return formContainsErrors;
       });
+      return formContainsErrors;
     });
 
     if (
@@ -107,7 +109,7 @@ export default class CreateModule extends Component {
       'state_changed',
       snapshot => this.progressMoniterCallback(snapshot),
       error => this.uploadError(error),
-      () => this.uploadCompleteHandler()
+      () => this.uploadCompleteHandler(uploadTask.snapshot.downloadURL)
     );
   }
 
@@ -122,7 +124,7 @@ export default class CreateModule extends Component {
     });
   }
 
-  uploadCompleteHandler() {
+  uploadCompleteHandler(downloadURL) {
     //edit the database here
     fire
       .database()
@@ -134,7 +136,8 @@ export default class CreateModule extends Component {
         quiz: {
           questions: this.state.questions
         },
-        video: this.state.video
+        video: downloadURL,
+        subscriptionLevel: Number(this.state.subscriptionLevel)
       })
       .then(() => {
         window.location.reload();
@@ -196,6 +199,10 @@ export default class CreateModule extends Component {
       'A video must be provided.'
     );
     const questionsLink = Link.state(this, 'questions');
+    const subscriptionLevelLink = Link.state(this, 'subscriptionLevel').check(
+      x => x >= 0 && x <= 10,
+      'Subscription Level must be in the range [0, 10]'
+    );
 
     return (
       <div className="create-module-wrapper">
@@ -253,23 +260,42 @@ export default class CreateModule extends Component {
                 placeholder="Enter a module description."
               />
             </FormGroup>
-
-            <FormGroup>
-              <Label for="video"> Module Video: </Label>
-              <div className="error-message">
-                {this.state.shouldShowErrors ? videoLink.error || '' : ''}
-              </div>
-              <Input
-                value={videoLink.value}
-                onChange={e => {
-                  videoLink.set(e.target.value);
-                }}
-                type="file"
-                id="videoFile"
-                accept="video/*"
-              />
-            </FormGroup>
-
+            <Row>
+              <Col>
+                <FormGroup>
+                  <Label for="video"> Module Video: </Label>
+                  <div className="error-message">
+                    {this.state.shouldShowErrors ? videoLink.error || '' : ''}
+                  </div>
+                  <Input
+                    value={videoLink.value}
+                    onChange={e => {
+                      videoLink.set(e.target.value);
+                    }}
+                    type="file"
+                    id="videoFile"
+                    accept="video/*"
+                  />
+                </FormGroup>
+              </Col>
+              <Col>
+                <FormGroup>
+                  <Label for="video"> Subscription Level: </Label>
+                  <div className="error-message">
+                    {this.state.shouldShowErrors
+                      ? subscriptionLevelLink.error || ''
+                      : ''}
+                  </div>
+                  <Input
+                    value={subscriptionLevelLink.value}
+                    onChange={e => {
+                      subscriptionLevelLink.set(e.target.value);
+                    }}
+                    type="number"
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
             <Label> Questions: </Label>
 
             {questionsLink.map((questionLink, index) => {
