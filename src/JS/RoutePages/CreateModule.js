@@ -39,7 +39,14 @@ export default class CreateModule extends Component {
     };
   }
 
-  submitModule(nameLink, titleLink, descriptionLink, videoLink, questionsLink) {
+  submitModule(
+    nameLink,
+    titleLink,
+    descriptionLink,
+    videoLink,
+    questionsLink,
+    subscriptionLevelLink
+  ) {
     if (this.state.questions.length < 1) {
       this.addQuestion();
     }
@@ -81,7 +88,8 @@ export default class CreateModule extends Component {
       titleLink.error ||
       descriptionLink.error ||
       videoLink.error ||
-      formContainsErrors
+      formContainsErrors ||
+      subscriptionLevelLink.error
     ) {
       this.setState({
         shouldShowErrors: true
@@ -90,7 +98,7 @@ export default class CreateModule extends Component {
     }
 
     this.setState({
-      uploadStarted: true,
+      isSubmitting: true,
       progress: 0
     });
 
@@ -134,7 +142,25 @@ export default class CreateModule extends Component {
         subscriptionLevel: Number(this.state.subscriptionLevel)
       })
       .then(() => {
-        window.location.reload();
+        this.setState({
+          shouldShowErrors: false,
+          isSubmitting: false,
+          progress: 0,
+
+          subscriptionLevel: -1,
+          name: '',
+          title: '',
+          description: '',
+          video: '',
+          questions: [
+            {
+              question: '',
+              type: '',
+              options: [{ option: '' }]
+            }
+          ]
+        });
+        alert('Module Created Successfully.');
       });
   }
 
@@ -192,10 +218,15 @@ export default class CreateModule extends Component {
       'A video must be provided.'
     );
     const questionsLink = Link.state(this, 'questions');
-    const subscriptionLevelLink = Link.state(this, 'subscriptionLevel').check(
-      x => x >= 0 && x <= 10,
-      'Subscription Level must be in the range [0, 10]'
-    );
+    const subscriptionLevelLink = Link.state(this, 'subscriptionLevel')
+      .check(
+        x => x >= 0 && x <= 10,
+        'Subscription Level must be in the range [0, 10]'
+      )
+      .check(
+        x => x,
+        'Subscription level required to determine who can use this module'
+      );
 
     return (
       <div className="create-module-wrapper">
@@ -267,7 +298,7 @@ export default class CreateModule extends Component {
                     }}
                     type="file"
                     id="videoFile"
-                    accept="video/*"
+                    accept="video/mp4,video/x-m4v,video/*, video/mov"
                   />
                 </FormGroup>
               </Col>
@@ -321,11 +352,9 @@ export default class CreateModule extends Component {
           </Card>
           <div>
             <center>
-              {this.state.uploadStarted ? (
+              {this.state.isSubmitting ? (
                 <div>
-                  <div className="text-center">
-                    {this.state.progress.substring(0, 4)}%
-                  </div>
+                  <div className="text-center">{this.state.progress}%</div>
                   <Progress value={this.state.progress} />
                 </div>
               ) : (
@@ -336,7 +365,8 @@ export default class CreateModule extends Component {
                       titleLink,
                       descriptionLink,
                       videoLink,
-                      questionsLink
+                      questionsLink,
+                      subscriptionLevelLink
                     )
                   }
                   style={{ margin: 10 + 'px' }}

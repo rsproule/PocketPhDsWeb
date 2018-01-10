@@ -30,17 +30,18 @@ export default class ModuleModal extends Component {
           let description = snap.val().description;
           let questions = snap.val().quiz.questions;
           let subscriptionLevel = snap.val().subscriptionLevel;
+          let id = snap.key;
 
           fire
             .database()
             .ref('users/' + fire.auth().currentUser.uid + '/subscriptionLevel')
             .once('value', snap => {
               let userSubLevel = snap.val();
-              if (userSubLevel > subscriptionLevel) {
+              if (userSubLevel >= subscriptionLevel) {
                 this.setState({
                   modules: this.state.modules.concat([
                     {
-                      id: snap.key,
+                      id: id,
                       name: name,
                       title: title,
                       description: description,

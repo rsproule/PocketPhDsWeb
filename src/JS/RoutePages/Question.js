@@ -136,22 +136,28 @@ export default class QuestionInput extends Component {
                       </div>
                     </Label>
 
-                    <Input
-                      value={optionValueLink.value}
-                      onChange={e => {
-                        optionValueLink.set(e.target.value);
-                      }}
-                      type="text"
-                      id="question"
-                      placeholder="Enter option"
-                    />
-                    <Button
-                      className="float-right"
-                      color="danger"
-                      onClick={() => this.props.removeOption(index)}
-                    >
-                      Remove Option
-                    </Button>
+                    <Row>
+                      <Col size="auto">
+                        <Input
+                          value={optionValueLink.value}
+                          onChange={e => {
+                            optionValueLink.set(e.target.value);
+                          }}
+                          type="text"
+                          id="question"
+                          placeholder="Enter option"
+                        />
+                      </Col>
+                      <Col>
+                        <Button
+                          className="float-left"
+                          color="danger"
+                          onClick={() => this.props.removeOption(index)}
+                        >
+                          X
+                        </Button>
+                      </Col>
+                    </Row>
                   </FormGroup>
                 );
               })
