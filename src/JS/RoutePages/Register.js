@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import Link from 'valuelink';
 import { Input } from 'valuelink/lib/tags';
+import { Button } from 'reactstrap';
 
 // wrapper for form inputs that also will show error state
 const FormInput = ({ label, shouldShowErrors, ...props }) => (
@@ -54,6 +55,10 @@ export default class Register extends Component {
       return;
     }
 
+    this.setState({
+      registering: true
+    });
+
     // try to register the user
     var registerSuccessful = true;
     fire
@@ -63,7 +68,8 @@ export default class Register extends Component {
         registerSuccessful = false;
         this.setState({
           shouldShowErrors: true,
-          serverError: error.message
+          serverError: error.message,
+          registering: false
         });
       })
       .then(() => {
@@ -147,13 +153,14 @@ export default class Register extends Component {
           </p>
         </div>
 
-        <div className="register-form">
+        <form className="register-form">
           <FormInput
             label="E-mail"
             shouldShowErrors={this.state.shouldShowErrors}
             type="text"
             placeholder="you@domain.com"
             id="email"
+            autoComplete="email"
             required
             valueLink={emailLink}
           />
@@ -163,6 +170,7 @@ export default class Register extends Component {
             shouldShowErrors={this.state.shouldShowErrors}
             type="password"
             placeholder="Enter Password"
+            autoComplete="new-password"
             required
             valueLink={pswd1Link}
           />
@@ -172,13 +180,16 @@ export default class Register extends Component {
             shouldShowErrors={this.state.shouldShowErrors}
             type="password"
             placeholder="Enter Password"
+            autoComplete="new-password"
             required
             valueLink={pswd2Link}
           />
 
           <div className="error-message">{this.state.serverError}</div>
 
-          <button
+          <Button
+            color="primary"
+            disabled={this.state.registering}
             onClick={() =>
               this.onSubmit(
                 emailLink.error || pswd1Link.error || pswd2Link.error
@@ -186,9 +197,9 @@ export default class Register extends Component {
             }
             type="submit"
           >
-            Create your Account
-          </button>
-        </div>
+            Create Teacher Account
+          </Button>
+        </form>
       </div>
     );
   }

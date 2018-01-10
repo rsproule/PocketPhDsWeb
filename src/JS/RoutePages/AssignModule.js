@@ -75,12 +75,14 @@ export default class ModuleModal extends Component {
         var module = modulesLink.value[m];
         await fire
           .database()
-          .ref('classes/' + this.props.classId)
+          .ref('classes/' + this.props.classId) // eslint-disable-next-line
           .once('value', snap => {
+            // eslint-disable-next-line
             let students = snap.val().students;
             for (let s in students) {
               var date = new Date();
               date.setDate(date.getDate() + 7);
+              // eslint-disable-next-line
 
               uploads.push(
                 fire
@@ -119,6 +121,11 @@ export default class ModuleModal extends Component {
           Pocket PhD Modules
         </ModalHeader>
         <div style={{ padding: 10 + 'px' }}>
+          Modules are restricted based on subscription. If you would like to
+          access more modules, contact Pocket PhDs to increase your
+          subscription.
+          <br />
+          <br />
           NOTE: If you assign a module that students have already worked on, it
           will reassign it with no progress due 1 week from when you click
           'Assign Modules' below.

@@ -86,6 +86,7 @@ var registerAllStudents = ({ students }) => {
           student: student,
           secondaryFire: secondaryFire
         })
+          // eslint-disable-next-line
           .then(({ student_id, student, cancelUpload }) => {
             return uploadStudentToDatabase({
               student: student,
@@ -93,6 +94,7 @@ var registerAllStudents = ({ students }) => {
               cancelUpload: cancelUpload
             });
           })
+          // eslint-disable-next-line
           .then(({ student_id, student }) => {
             //create the parent
             return createParent({
@@ -101,6 +103,7 @@ var registerAllStudents = ({ students }) => {
               secondaryFire: secondaryFire
             });
           })
+          // eslint-disable-next-line
           .then(({ student_id, student, parent_id, cancelUpload }) => {
             return uploadParentToDatabase({
               student: student,

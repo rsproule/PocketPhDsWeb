@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import Link from 'valuelink';
 import { Input } from 'valuelink/lib/tags';
+import { Button } from 'reactstrap';
 
 class Login extends Component {
   constructor(props) {
@@ -14,11 +15,15 @@ class Login extends Component {
       email: '',
       password: '',
       loggedIn: false,
-      errorMsg: ''
+      errorMsg: '',
+      loggingIn: false
     };
   }
 
   login() {
+    this.setState({
+      loggingIn: true
+    });
     var loginSuccessful = true;
     fire
       .auth()
@@ -27,7 +32,8 @@ class Login extends Component {
         // Handle Errors here.
         loginSuccessful = false;
         this.setState({
-          errorMsg: error.message
+          errorMsg: error.message,
+          loggingIn: false
         });
       })
       .then(() => {
@@ -46,7 +52,7 @@ class Login extends Component {
     }
 
     return (
-      <div className="login">
+      <form className="login" onSubmit={() => this.login()}>
         <div>
           <h2> Log In </h2>
 
@@ -61,6 +67,7 @@ class Login extends Component {
         <label> E-Mail </label>
         <Input
           type="text"
+          autoComplete="email"
           placeholder="Enter E-Mail"
           valueLink={Link.state(this, 'email')}
         />
@@ -68,20 +75,23 @@ class Login extends Component {
         <label> Password </label>
         <Input
           type="password"
+          autoComplete="current-password"
           placeholder="Enter Password"
           valueLink={Link.state(this, 'password')}
         />
 
         <div className="error-message">{this.state.errorMsg}</div>
-        <button
+        <Button
+          disabled={this.state.loggingIn}
+          color="primary"
           onClick={() => {
             this.login();
           }}
         >
           {' '}
           Log In{' '}
-        </button>
-      </div>
+        </Button>
+      </form>
     );
   }
 }

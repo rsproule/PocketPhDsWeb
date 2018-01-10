@@ -83,12 +83,6 @@ export default class CreateModule extends Component {
       videoLink.error ||
       formContainsErrors
     ) {
-      console.log(
-        nameLink.error ||
-          titleLink.error ||
-          descriptionLink.error ||
-          videoLink.error
-      );
       this.setState({
         shouldShowErrors: true
       });
@@ -114,7 +108,7 @@ export default class CreateModule extends Component {
   }
 
   uploadError(error) {
-    console.log('Error: ' + error);
+    alert('Error during video upload. Check your internet connection');
   }
 
   progressMoniterCallback(snapshot) {
@@ -163,7 +157,6 @@ export default class CreateModule extends Component {
   }
 
   addOption(questionIndex) {
-    // console.log(questionIndex);
     var newGuy = this.state.questions[questionIndex].options.concat([
       { option: '' }
     ]);
@@ -330,7 +323,9 @@ export default class CreateModule extends Component {
             <center>
               {this.state.uploadStarted ? (
                 <div>
-                  <div className="text-center">{this.state.progress}%</div>
+                  <div className="text-center">
+                    {this.state.progress.substring(0, 4)}%
+                  </div>
                   <Progress value={this.state.progress} />
                 </div>
               ) : (

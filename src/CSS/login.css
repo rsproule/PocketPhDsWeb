@@ -1,41 +1,30 @@
-
 .login {
-    margin-top: 10%;
-    margin: 0 auto;
-    width: 40%;
-    height: auto;
-    /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
-    padding: 15px; 
+  margin-top: 10%;
+  margin: 0 auto;
+  width: 40%;
+  height: auto;
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+  padding: 15px;
 }
 .login input {
-	width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    margin-bottom: 28px;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    font-size: 12pt;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  margin-bottom: 28px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 12pt;
 }
 
 .login label {
-    float: left;
+  float: left;
 }
 
-
-.login button{
-	background-color: #4a83e2;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    font-size: 18pt;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    outline: none;
-
+.login button {
+  width: 100%;
 }
+/*
 
 .login button:hover {
     opacity: .8;
@@ -44,10 +33,10 @@
 .login button:active{
      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
-}
+} */
 
 .error-message {
-    color: red;
-    float: right;
-    font-size: 10pt;
+  color: red;
+  float: right;
+  font-size: 10pt;
 }
