@@ -63,7 +63,6 @@ export default class Account extends Component {
     // while we are still on the user page and need to reroute back to secure place
     this.setState({
       unsubscribe: fire.auth().onAuthStateChanged(user => {
-        // alert("auth state change")
         if (user) {
           fire
             .database()
@@ -73,7 +72,7 @@ export default class Account extends Component {
               let email = snap.val().email;
               let schoolName = snap.val().school;
               let classes = snap.val().classes;
-              let profile_url = snap.val().profile;
+              let profile_url = snap.val().profileUrl;
               let bio = snap.val().bio;
               let type = snap.val().type;
 
@@ -151,10 +150,13 @@ export default class Account extends Component {
                   <span className="avatar">
                     {this.state.profile_url ? (
                       <img src={this.state.profile_url} alt="profile_img" />
-                    ) : this.state.name ? (
-                      this.state.name.substring(0, 2).toUpperCase()
                     ) : (
-                      this.state.email.substring(0, 2).toUpperCase()
+                      <div style={{ padding: '25px' }}>
+                        {fire
+                          .auth()
+                          .currentUser.displayName.substring(0, 2)
+                          .toUpperCase()}
+                      </div>
                     )}
                   </span>
                   <span className="display-name">{this.state.name}</span>

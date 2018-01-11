@@ -9,6 +9,7 @@ import Class from './RoutePages/Class.js';
 import CreateClass from './RoutePages/CreateClass.js';
 import CreateModule from './RoutePages/CreateModule.js';
 import AssignTutor from './RoutePages/AssignTutor.js';
+import EditAccount from './RoutePages/EditProfile.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -37,8 +38,6 @@ const Pricing = () => <div>pricing</div>;
 const FAQ = () => <div>FAQ</div>;
 
 const Contact = () => <div>contact</div>;
-
-const EditAccount = () => <div>Edit the account here</div>;
 
 const PrivateRoute = ({ component: Component, auth, loading, ...rest }) => (
   <Route

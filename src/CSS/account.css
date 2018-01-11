@@ -55,10 +55,20 @@
   margin: 10px;
   margin-left: 0;
   margin-right: 25px;
-  padding: 28px;
   border-radius: 10%;
   display: inline-block;
   font-size: 26pt;
+}
+
+.avatar .initials {
+  padding: 25;
+}
+.avatar img {
+  padding: 5px;
+  border-radius: 10%;
+  height: 150px;
+  width: 150px;
+  object-fit: scale-down;
 }
 .display-name {
   font-size: 23pt;
