@@ -152,10 +152,12 @@ export default class Account extends Component {
                       <img src={this.state.profile_url} alt="profile_img" />
                     ) : (
                       <div style={{ padding: '25px' }}>
-                        {fire
-                          .auth()
-                          .currentUser.displayName.substring(0, 2)
-                          .toUpperCase()}
+                        {fire.auth().currentUser.displayName
+                          ? fire
+                              .auth()
+                              .currentUser.displayName.substring(0, 2)
+                              .toUpperCase()
+                          : '  '}
                       </div>
                     )}
                   </span>
@@ -272,6 +274,18 @@ export default class Account extends Component {
                   >
                     {' '}
                     Create Module{' '}
+                  </Link>
+                  <Link
+                    to="/account/change-subscription"
+                    onClick={() => this.tabClicked('change-subscription')}
+                    className={
+                      this.state.currentTab === 'change-subscription'
+                        ? 'activeTab'
+                        : ''
+                    }
+                  >
+                    {' '}
+                    Change Subscription{' '}
                   </Link>
                 </div>
               </div>

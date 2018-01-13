@@ -1,11 +1,28 @@
-.login {
-  margin-top: 10%;
-  margin: 0 auto;
-  width: 40%;
-  height: auto;
-  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
-  padding: 15px;
+@media (min-width: 800px) {
+  .login {
+    margin-top: 10%;
+    margin: 0 auto;
+    width: 40%;
+    height: auto;
+    /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+    padding: 15px;
+    /*font-family: notosarif;*/
+  }
 }
+
+@media (max-width: 799px) {
+  .login {
+    margin-top: 10%;
+    margin: 0 auto;
+    width: 95%;
+    height: auto;
+    /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+    padding: 15px;
+    /*font-family: notosarif;*/
+    /*font-family: notosarif;*/
+  }
+}
+
 .login input {
   width: 100%;
   padding: 12px 20px;

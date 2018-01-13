@@ -73,6 +73,7 @@ export default class AddTutor extends Component {
             school: 'Pocket Phds Tutoring'
           });
       })
+      .then(() => secondaryFire.auth().sendPasswordResetEmail(this.state.email))
       .then(() => {
         if (this.state.serverErrors) {
           secondaryFire.delete();

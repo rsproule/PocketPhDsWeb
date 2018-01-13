@@ -277,6 +277,8 @@ var uploadStudentToDatabase = ({ student, student_id, cancelUpload }) => {
       resolveUpload({ student_id: student_id, student: student });
     } else {
       //create chat for student
+      var chatUsers = {};
+      chatUsers[student_id] = true;
       fire
         .database()
         .ref('chats')
@@ -285,7 +287,8 @@ var uploadStudentToDatabase = ({ student, student_id, cancelUpload }) => {
           lastMessage: 'Welcome to Pocket Phds',
           timestamp: +new Date(),
           isActive: false,
-          type: 'student'
+          type: 'student',
+          users: chatUsers
         })
         .then(chatSnap => {
           // add user to the database
@@ -357,6 +360,8 @@ var uploadParentToDatabase = ({
         // if the parent doesnt alreadt exist :
 
         // 1 create a chat
+        var chatUsersParents = {};
+        chatUsersParents[parent_id] = true;
         return (
           fire
             .database()
@@ -366,7 +371,8 @@ var uploadParentToDatabase = ({
               lastMessage: 'Welcome to Pocket Phds',
               timestamp: +new Date(),
               isActive: false,
-              type: 'parent'
+              type: 'parent',
+              users: chatUsersParents
             })
             // 2 add to database
             .then(chatSnap => {

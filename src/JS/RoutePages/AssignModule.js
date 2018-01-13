@@ -68,6 +68,7 @@ export default class ModuleModal extends Component {
 
   async assignModule(modulesLink) {
     var uploads = [];
+    const classId = this.props.classId;
 
     for (let m in modulesLink.value) {
       /*jshint loopfunc: true */
@@ -76,7 +77,7 @@ export default class ModuleModal extends Component {
         var module = modulesLink.value[m];
         await fire
           .database()
-          .ref('classes/' + this.props.classId) // eslint-disable-next-line
+          .ref('classes/' + classId) // eslint-disable-next-line
           .once('value', snap => {
             // eslint-disable-next-line
             let students = snap.val().students;
@@ -88,7 +89,14 @@ export default class ModuleModal extends Component {
               uploads.push(
                 fire
                   .database()
-                  .ref('users/' + s + '/modules/' + module['id'])
+                  .ref(
+                    'users/' +
+                      s +
+                      '/modules/' +
+                      classId +
+                      '/modules/' +
+                      module['id']
+                  )
                   .set({
                     name: module['name'],
                     title: module['title'],
@@ -98,6 +106,12 @@ export default class ModuleModal extends Component {
                     questionCount: module['questionsCount'],
                     dueDate: Number(date)
                   })
+                  .then(() =>
+                    fire
+                      .database()
+                      .ref('/users/' + s + '/modules/' + classId + '/className')
+                      .set(snap.val().name)
+                  )
               );
             }
           });

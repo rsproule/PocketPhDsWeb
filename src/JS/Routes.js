@@ -10,6 +10,7 @@ import CreateClass from './RoutePages/CreateClass.js';
 import CreateModule from './RoutePages/CreateModule.js';
 import AssignTutor from './RoutePages/AssignTutor.js';
 import EditAccount from './RoutePages/EditProfile.js';
+import ChangeSubscription from './RoutePages/ChangeSubscription.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -109,6 +110,7 @@ class Routes extends Component {
     let isFirefox = this.determineIfFirefox();
     this.state = {
       dropdownOpen: false,
+      menuOpen: false,
       loadingUser: true,
       isFirefox: isFirefox
     };
@@ -122,6 +124,12 @@ class Routes extends Component {
   toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen
+    });
+  }
+
+  toggleMenu() {
+    this.setState({
+      menuOpen: !this.state.menuOpen
     });
   }
 
@@ -196,35 +204,66 @@ class Routes extends Component {
   }
 
   render() {
+    var navItems = [
+      <NavLink className="logo" to="/">
+        {' '}
+        <img src={plogo} alt="Home" width="50" />{' '}
+      </NavLink>,
+
+      <NavLink to="/how-it-works">How it Works</NavLink>,
+
+      <NavLink to="/pricing">Pricing</NavLink>,
+      <NavLink to="/experts">Our Experts</NavLink>,
+      <NavLink to="/faq">FAQ</NavLink>,
+      <NavLink to="/contact">Contact</NavLink>
+    ];
+
     return (
       <Router>
         <div className="navigation">
           <ul>
-            <div>
+            {/* <div className="logo-nav">
               <li>
-                <NavLink className="logo" to="/">
-                  {' '}
-                  <img src={plogo} alt="Home" width="50" />{' '}
-                </NavLink>
+                {navItems[0]}
               </li>
+            </div> */}
+
+            <div className="nav-items-dropdown">
+              <Dropdown
+                isOpen={this.state.menuOpen}
+                toggle={() => this.toggleMenu()}
+              >
+                <DropdownToggle>Menu</DropdownToggle>
+                <DropdownMenu>
+                  {navItems.map((item, i) => {
+                    if (this.state.isFirefox) {
+                      return { item };
+                    }
+                    if (i === 0) {
+                      // the image with the link
+
+                      return (
+                        <DropdownItem className="dropdown-menu-item" key={i}>
+                          {item} Home
+                        </DropdownItem>
+                      );
+                    }
+                    return (
+                      <DropdownItem className="dropdown-menu-item" key={i}>
+                        {item}
+                      </DropdownItem>
+                    );
+                  })}
+                </DropdownMenu>
+              </Dropdown>
             </div>
 
-            <div>
-              <li>
-                <NavLink to="/how-it-works">How it Works</NavLink>
-              </li>
-              <li>
-                <NavLink to="/pricing">Pricing</NavLink>
-              </li>
-              <li>
-                <NavLink to="/experts">Our Experts</NavLink>
-              </li>
-              <li>
-                <NavLink to="/faq">FAQ</NavLink>
-              </li>
-              <li>
-                <NavLink to="/contact">Contact</NavLink>
-              </li>
+            <div className="nav-items-bar">
+              <span>
+                {navItems.map((item, i) => {
+                  return <li key={i}>{item}</li>;
+                })}
+              </span>
             </div>
 
             <div className="login-nav">
@@ -359,6 +398,12 @@ class Routes extends Component {
             loading={this.state.loadingUser}
             path="/account/assign-tutor"
             component={AssignTutor}
+          />
+          <AdminRoute
+            auth={this.state.isLoggedIn}
+            loading={this.state.loadingUser}
+            path="/account/change-subscription"
+            component={ChangeSubscription}
           />
         </div>
       </Router>

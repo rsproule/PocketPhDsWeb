@@ -1,129 +1,139 @@
-
 .spacer {
-	height: 500px;
+  height: 500px;
 }
 /* Div block */
-.navigation{
-	/*float: right;*/
-	/*width: 100%;*/
+.navigation {
+  /*float: right;*/
+  /*width: 100%;*/
+}
+
+@media (max-width: 799px) {
+  .nav-items-bar {
+    display: none;
+  }
+}
+
+@media (max-width: 799px) {
+  .logo-nav {
+    display: none;
+  }
+}
+
+@media (min-width: 799px) {
+  .nav-items-dropdown {
+    display: none;
+  }
+}
+
+@media (max-width: 799px) {
+  .nav-items-dropdown {
+    float: left;
+    padding-top: 25px;
+    padding-left: 10px;
+  }
+}
+
+.dropdown-menu-item {
+  text-align: center;
+  padding: 10px;
+}
+.dropdown-menu-item a {
+  margin: 0;
+  text-align: center;
+  color: black;
+  text-decoration: none;
+  padding: 10px;
+}
+
+.dropdown-menu-item a:hover {
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+  color: #4a83e2;
+  text-decoration: none;
+  padding: 10px;
 }
 
 .navigation ul {
-	width: 100%;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 /*everything is gonna float left unless it is the login stuff.. that floats the the right*/
 .navigation li {
-	float: left;
+  float: left;
 }
 
 /*login stuff */
-.login-nav{
-	float: right;
+.login-nav {
+  float: right;
 }
-
-
-
 
 .navigation li a {
-	color: #7f8184;;
-	text-decoration: none;
-	display: block;
-    text-align: center;
-    margin: 25px 16px;
+  color: #7f8184;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  margin: 25px 16px;
 }
-.navigation li .dropdown-wrapper{
-	    margin: 25px 16px;	
-
-
+.navigation li .dropdown-wrapper {
+  margin: 25px 16px;
 }
-.navigation li .dropdown-wrapper a{
-	    margin: 0 0;	
-	    
-
+.navigation li .dropdown-wrapper a {
+  margin: 0 0;
 }
 .navigation li a:hover {
-	color: #4a83e2;
-	cursor: pointer;
+  color: #4a83e2;
+  cursor: pointer;
 }
 
+.navigation li .logo {
+  /*border: 1px black solid ;*/
 
-.navigation li .logo{
-	/*border: 1px black solid ;*/
-
-	margin: 14px 16px;
-	float: left;
-	display: block;
-	text-align: center;
-
+  margin: 14px 16px;
+  float: left;
+  display: block;
+  text-align: center;
 }
-
 
 .navigation li .active {
-	color: #4a83e2;
-	border-bottom: 3px solid #4a83e2; 
-	/*text-decoration: underline;*/
+  color: #4a83e2;
+  border-bottom: 3px solid #4a83e2;
+  /*text-decoration: underline;*/
 }
 
+.navigation li .register {
+  background-color: #44474c;
+  color: white;
+  margin: 16px 16px;
 
-
-
-
-.navigation li .register{
-
-	background-color: #44474c;
-	color: white;
-	margin: 16px 16px;
-
-	padding: 10px;
-	border-radius: 6px;
+  padding: 10px;
+  border-radius: 6px;
 }
 
-.navigation li .account{
+.navigation li .account {
+  background-color: #7f8184;
+  color: white;
+  margin: 10px 16px;
 
-	background-color: #7f8184;
-	color: white;
-	margin: 10px 16px;
-
-	padding: 16px;
-	border-radius: 50%;
+  padding: 16px;
+  border-radius: 50%;
 }
 
 .navigation li .drop {
-	margin: 0;
-	padding: 5px;
-	text-align: center;
-	color: black;
-
+  margin: 0;
+  padding: 5px;
+  text-align: center;
+  color: black;
 }
 
-
 .navigation li .drop:hover {
-	color: #4a83e2;
-	cursor: pointer;
+  color: #4a83e2;
+  cursor: pointer;
 }
 /*.navigation li .drop:active {
 	background-color: #4286f4;
 	color: black;
 }*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

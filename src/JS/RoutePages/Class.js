@@ -61,7 +61,7 @@ export default class Class extends Component {
             .ref('/users/' + s)
             .on('value', snapshot => {
               let name = snapshot.val().name;
-              let modulesSnap = snapshot.val().modules;
+              let modulesClasses = snapshot.val().modules;
               let notificationToken = snapshot.val().notificationToken;
               let email = snapshot.val().email;
               let classes = snapshot.val().classes;
@@ -72,52 +72,57 @@ export default class Class extends Component {
                 var MODULES = [];
                 var totalQuestions = 0;
                 var totalAnswered = 0;
-                for (let k in modulesSnap) {
-                  var questionsAnsweredCount = 0;
-                  let m = modulesSnap[k];
-                  let description = m['description'];
-                  let title = m['title'];
-                  let name = m['name'];
-                  let videoWatched = m['videoWatched'];
-                  if (videoWatched) questionsAnsweredCount++;
-                  let quizTaken = m['quizTaken'];
-                  var responses = [];
-                  var numQuestions = m['questionCount'];
-                  for (let question in m['responses']) {
-                    questionsAnsweredCount++;
-                    responses.push({
-                      question: question,
-                      response: m['responses'][question]
+                for (let c in modulesClasses) {
+                  if (c === this.props.match.params.classid) {
+                    var modulesSnap = modulesClasses[c].modules;
+                    for (let k in modulesSnap) {
+                      var questionsAnsweredCount = 0;
+                      let m = modulesSnap[k];
+                      let description = m['description'];
+                      let title = m['title'];
+                      let name = m['name'];
+                      let videoWatched = m['videoWatched'];
+                      if (videoWatched) questionsAnsweredCount++;
+                      let quizTaken = m['quizTaken'];
+                      var responses = [];
+                      var numQuestions = m['questionCount'];
+                      for (let question in m['responses']) {
+                        questionsAnsweredCount++;
+                        responses.push({
+                          question: question,
+                          response: m['responses'][question]
+                        });
+                      }
+
+                      let MODULE = {
+                        name: name,
+                        title: title,
+                        description: description,
+                        quizTaken: quizTaken,
+                        videoWatched: videoWatched,
+                        responses: responses
+                      };
+                      MODULES.push(MODULE);
+                      totalAnswered += questionsAnsweredCount;
+                      totalQuestions += numQuestions + 1; // plus on to account for video
+                    }
+                    let progress = totalAnswered / totalQuestions * 100.0;
+                    let STUDENT = {
+                      id: snapshot.key,
+                      name: name,
+                      progress: progress,
+                      modules: MODULES,
+                      email: email,
+                      notificationToken: notificationToken
+                    };
+                    var students = this.state.students;
+                    students[s] = STUDENT;
+
+                    this.setState({
+                      students: students
                     });
                   }
-
-                  let MODULE = {
-                    name: name,
-                    title: title,
-                    description: description,
-                    quizTaken: quizTaken,
-                    videoWatched: videoWatched,
-                    responses: responses
-                  };
-                  MODULES.push(MODULE);
-                  totalAnswered += questionsAnsweredCount;
-                  totalQuestions += numQuestions + 1; // plus on to account for video
                 }
-                let progress = totalAnswered / totalQuestions * 100.0;
-                let STUDENT = {
-                  id: snapshot.key,
-                  name: name,
-                  progress: progress,
-                  modules: MODULES,
-                  email: email,
-                  notificationToken: notificationToken
-                };
-                var students = this.state.students;
-                students[s] = STUDENT;
-
-                this.setState({
-                  students: students
-                });
               } else {
                 students = this.state.students;
                 delete students[s];

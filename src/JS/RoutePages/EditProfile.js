@@ -254,14 +254,15 @@ export default class EditAccount extends Component {
               bioLink.set(e.target.value);
             }}
           />
-
-          <Button
-            color="primary"
-            className="float-left"
-            onClick={() => this.save()}
-          >
-            Save
-          </Button>
+          <center style={{ padding: 10 + 'px' }}>
+            <Button
+              color="primary"
+              //className="float-left"
+              onClick={() => this.save()}
+            >
+              Save
+            </Button>
+          </center>
           {this.state.saved ? (
             <div
               className="float-right"
