@@ -2,40 +2,71 @@ import '../../CSS/homepage.css';
 
 import Footer from '../Footer.js';
 
-import plogo from '../../Logos/PocketPhDsLogo.JPG';
+import plogo from '../../Logos/PPHD_clear_back.PNG';
+import clockImg from '../../Logos/clock.png';
+import freeTrial from '../../Logos/free-trial.jpg';
+import empower from '../../Logos/empower.png';
 import React, { Component } from 'react';
 //bootstrap
-import { Col, Jumbotron, Row } from 'reactstrap';
+import { Col, Jumbotron, Row, Media } from 'reactstrap';
 
 class Home extends Component {
   render() {
     return (
       <div>
         <div className="home">
-          <div className="logo-container">
-            <img src={plogo} alt="logo" className="logo" height="150" />
-          </div>
           <Jumbotron>
-            <p className="display-4">Unlock your Brain Power</p>
-            <hr className="my-3" />
-            <div className="info-paragraph">
-              <p>
-                We empower students by connecting them with experts in math,
-                science, and engineering. All of our tutors have or are pursuing
-                a doctoral degree in these fields.
-              </p>
-
-              <p>
-                Forget the hassle of setting up an in-person tutoring session!
-                Message your tutor any time for help to start an online session.
-                ​
-              </p>
-
-              <p>
-                No Credit Card Information needed, and the first session is
-                always free
-              </p>
+            <div className="logo-container">
+              <img src={plogo} alt="logo" className="logo" height="150" />
             </div>
+            <center>
+              <p className="display-4">Unlock your Brain Power</p>
+            </center>
+
+            <hr className="my-3" />
+            <center>
+              <iframe
+                width="85%"
+                height="600"
+                src="https://www.youtube.com/embed/b5hyeHiIcyY"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+              />
+            </center>
+          </Jumbotron>
+
+          <Jumbotron>
+            <Media>
+              <img src={empower} className="image" />
+              <Media body style={{ padding: 25 + 'px' }}>
+                <Media heading>Giving student the power</Media>
+                We empower students by connecting them with Brain Coached who
+                are PhDs in STEM fields.
+              </Media>
+            </Media>
+          </Jumbotron>
+
+          <Jumbotron>
+            <Media>
+              <img src={clockImg} className="image" />
+              <Media body style={{ padding: 25 + 'px' }}>
+                <Media heading>Flexible Availability</Media>
+                Forget the hassle of an in-person session! Message your Brain
+                Coach at any time.
+              </Media>
+            </Media>
+          </Jumbotron>
+
+          <Jumbotron>
+            <Media>
+              <img src={freeTrial} className="image" />
+              <Media body style={{ padding: 25 + 'px' }}>
+                <Media heading>Try it out for free</Media>
+                No credit card information required, and the first session in
+                salways free!
+              </Media>
+            </Media>
           </Jumbotron>
 
           <Jumbotron>

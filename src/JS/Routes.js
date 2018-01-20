@@ -11,6 +11,8 @@ import CreateModule from './RoutePages/CreateModule.js';
 import AssignTutor from './RoutePages/AssignTutor.js';
 import EditAccount from './RoutePages/EditProfile.js';
 import ChangeSubscription from './RoutePages/ChangeSubscription.js';
+import HowItWorks from './RoutePages/HowItWorks.js';
+import Experts from './RoutePages/Experts.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -29,12 +31,6 @@ import {
   DropdownMenu,
   DropdownToggle
 } from 'reactstrap';
-
-const HowItWorks = () => <div>How it works</div>;
-
-const Experts = () => <div>Our Experts</div>;
-
-const Pricing = () => <div>pricing</div>;
 
 const FAQ = () => <div>FAQ</div>;
 
@@ -211,8 +207,6 @@ class Routes extends Component {
       </NavLink>,
 
       <NavLink to="/how-it-works">How it Works</NavLink>,
-
-      <NavLink to="/pricing">Pricing</NavLink>,
       <NavLink to="/experts">Our Experts</NavLink>,
       <NavLink to="/faq">FAQ</NavLink>,
       <NavLink to="/contact">Contact</NavLink>
@@ -351,7 +345,6 @@ class Routes extends Component {
           <Route exact path="/" component={Home} />
           <Route path="/how-it-works" component={HowItWorks} />
           <Route path="/experts" component={Experts} />
-          <Route path="/pricing" component={Pricing} />
           <Route path="/faq" component={FAQ} />
           <Route path="/contact" component={Contact} />
           <Route path="/login" component={Login} />

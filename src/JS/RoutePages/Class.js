@@ -418,10 +418,10 @@ var StudentDropDown = ({ isOpen, toggle, student, class_id }) => {
         <DropdownItem onClick={resendSetupEmail}>
           Resend Account Setup E-mail
         </DropdownItem>
-        <DropdownItem divider />
-        <DropdownItem onClick={removeStudent} color="danger">
+        {/* <DropdownItem divider /> */}
+        {/* <DropdownItem onClick={removeStudent} color="danger">
           Remove User from Class
-        </DropdownItem>
+        </DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );
