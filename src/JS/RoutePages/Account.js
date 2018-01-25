@@ -287,6 +287,26 @@ export default class Account extends Component {
                     {' '}
                     Change Subscription{' '}
                   </Link>
+                  <Link
+                    to="/account/tutors"
+                    onClick={() => this.tabClicked('tutors')}
+                    className={
+                      this.state.currentTab === 'tutors' ? 'activeTab' : ''
+                    }
+                  >
+                    {' '}
+                    Tutors{' '}
+                  </Link>
+                  <Link
+                    to="/account/modules"
+                    onClick={() => this.tabClicked('modules')}
+                    className={
+                      this.state.currentTab === 'modules' ? 'activeTab' : ''
+                    }
+                  >
+                    {' '}
+                    Modules{' '}
+                  </Link>
                 </div>
               </div>
             ) : null}

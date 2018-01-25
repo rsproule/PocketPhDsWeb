@@ -13,6 +13,10 @@ import EditAccount from './RoutePages/EditProfile.js';
 import ChangeSubscription from './RoutePages/ChangeSubscription.js';
 import HowItWorks from './RoutePages/HowItWorks.js';
 import Experts from './RoutePages/Experts.js';
+import FAQ from './RoutePages/FAQ.js';
+import Contact from './RoutePages/Contact.js';
+import TutorList from './RoutePages/TutorList.js';
+import ModuleList from './RoutePages/ModuleList.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -31,10 +35,6 @@ import {
   DropdownMenu,
   DropdownToggle
 } from 'reactstrap';
-
-const FAQ = () => <div>FAQ</div>;
-
-const Contact = () => <div>contact</div>;
 
 const PrivateRoute = ({ component: Component, auth, loading, ...rest }) => (
   <Route
@@ -214,132 +214,134 @@ class Routes extends Component {
 
     return (
       <Router>
-        <div className="navigation">
-          <ul>
-            {/* <div className="logo-nav">
-              <li>
+        <div>
+          <div className="navigation">
+            <ul>
+              {/* <div className="logo-nav">
+                <li>
                 {navItems[0]}
-              </li>
-            </div> */}
+                </li>
+              </div> */}
 
-            <div className="nav-items-dropdown">
-              <Dropdown
-                isOpen={this.state.menuOpen}
-                toggle={() => this.toggleMenu()}
-              >
-                <DropdownToggle>Menu</DropdownToggle>
-                <DropdownMenu>
-                  {navItems.map((item, i) => {
-                    if (this.state.isFirefox) {
-                      return { item };
-                    }
-                    if (i === 0) {
-                      // the image with the link
+              <div className="nav-items-dropdown">
+                <Dropdown
+                  isOpen={this.state.menuOpen}
+                  toggle={() => this.toggleMenu()}
+                >
+                  <DropdownToggle>Menu</DropdownToggle>
+                  <DropdownMenu>
+                    {navItems.map((item, i) => {
+                      if (this.state.isFirefox) {
+                        return { item };
+                      }
+                      if (i === 0) {
+                        // the image with the link
 
+                        return (
+                          <DropdownItem className="dropdown-menu-item" key={i}>
+                            {item} Home
+                          </DropdownItem>
+                        );
+                      }
                       return (
                         <DropdownItem className="dropdown-menu-item" key={i}>
-                          {item} Home
+                          {item}
                         </DropdownItem>
                       );
-                    }
-                    return (
-                      <DropdownItem className="dropdown-menu-item" key={i}>
-                        {item}
-                      </DropdownItem>
-                    );
-                  })}
-                </DropdownMenu>
-              </Dropdown>
-            </div>
+                    })}
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
 
-            <div className="nav-items-bar">
-              <span>
-                {navItems.map((item, i) => {
-                  return <li key={i}>{item}</li>;
-                })}
-              </span>
-            </div>
-
-            <div className="login-nav">
-              {!this.state.isLoggedIn ? (
+              <div className="nav-items-bar">
                 <span>
-                  <li>
-                    <NavLink to="/login">Login</NavLink>
-                  </li>
-                  <li>
-                    <Link className="register" to="/register">
-                      Create an Account
-                    </Link>
-                  </li>
+                  {navItems.map((item, i) => {
+                    return <li key={i}>{item}</li>;
+                  })}
                 </span>
-              ) : (
-                <span className="menu-btn-li">
-                  <li>
-                    <div className="dropdown-wrapper">
-                      <Dropdown
-                        isOpen={this.state.dropdownOpen}
-                        toggle={() => this.toggle()}
-                      >
-                        <DropdownToggle caret>
-                          {this.state.loadingUser
-                            ? '...'
-                            : fire.auth().currentUser
-                              ? fire.auth().currentUser.displayName
-                                ? fire
-                                    .auth()
-                                    .currentUser.displayName.substring(0, 2)
-                                    .toUpperCase()
-                                : fire
-                                    .auth()
-                                    .currentUser.email.substring(0, 2)
-                                    .toUpperCase()
-                              : this.state.defaultInitials}
-                        </DropdownToggle>
-                        <DropdownMenu right>
-                          {// have to check dynamically if this is firefox becuase firefox
-                          // gets confused by the dropdown item wrapper
-                          this.state.isFirefox ? (
-                            <span>
-                              <NavLink className="drop" to="/account">
-                                {' '}
-                                View Profile{' '}
-                              </NavLink>
-                              <NavLink className="drop" to="/edit-profile">
-                                {' '}
-                                Edit Profile Info{' '}
-                              </NavLink>
-                            </span>
-                          ) : (
-                            <span>
-                              <DropdownItem>
+              </div>
+
+              <div className="login-nav">
+                {!this.state.isLoggedIn ? (
+                  <span>
+                    <li>
+                      <NavLink to="/login">Login</NavLink>
+                    </li>
+                    <li>
+                      <Link className="register" to="/register">
+                        Create an Account
+                      </Link>
+                    </li>
+                  </span>
+                ) : (
+                  <span className="menu-btn-li">
+                    <li>
+                      <div className="dropdown-wrapper">
+                        <Dropdown
+                          isOpen={this.state.dropdownOpen}
+                          toggle={() => this.toggle()}
+                        >
+                          <DropdownToggle caret>
+                            {this.state.loadingUser
+                              ? '...'
+                              : fire.auth().currentUser
+                                ? fire.auth().currentUser.displayName
+                                  ? fire
+                                      .auth()
+                                      .currentUser.displayName.substring(0, 2)
+                                      .toUpperCase()
+                                  : fire
+                                      .auth()
+                                      .currentUser.email.substring(0, 2)
+                                      .toUpperCase()
+                                : this.state.defaultInitials}
+                          </DropdownToggle>
+                          <DropdownMenu right>
+                            {// have to check dynamically if this is firefox becuase firefox
+                            // gets confused by the dropdown item wrapper
+                            this.state.isFirefox ? (
+                              <span>
                                 <NavLink className="drop" to="/account">
                                   {' '}
                                   View Profile{' '}
                                 </NavLink>
-                              </DropdownItem>
-                              <DropdownItem>
-                                {' '}
                                 <NavLink className="drop" to="/edit-profile">
                                   {' '}
                                   Edit Profile Info{' '}
                                 </NavLink>
-                              </DropdownItem>
-                            </span>
-                          )}
-                          <DropdownItem
-                            className="drop"
-                            onClick={() => this.logout()}
-                          >
-                            Log Out
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    </div>
-                  </li>
-                </span>
-              )}
-            </div>
-          </ul>
+                              </span>
+                            ) : (
+                              <span>
+                                <DropdownItem>
+                                  <NavLink className="drop" to="/account">
+                                    {' '}
+                                    View Profile{' '}
+                                  </NavLink>
+                                </DropdownItem>
+                                <DropdownItem>
+                                  {' '}
+                                  <NavLink className="drop" to="/edit-profile">
+                                    {' '}
+                                    Edit Profile Info{' '}
+                                  </NavLink>
+                                </DropdownItem>
+                              </span>
+                            )}
+                            <DropdownItem
+                              className="drop"
+                              onClick={() => this.logout()}
+                            >
+                              Log Out
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </div>
+                    </li>
+                  </span>
+                )}
+              </div>
+            </ul>
+          </div>
           <br /> <br /> <br />
           <hr />
           <Route exact path="/" component={Home} />
@@ -397,6 +399,18 @@ class Routes extends Component {
             loading={this.state.loadingUser}
             path="/account/change-subscription"
             component={ChangeSubscription}
+          />
+          <AdminRoute
+            auth={this.state.isLoggedIn}
+            loading={this.state.loadingUser}
+            path="/account/tutors"
+            component={TutorList}
+          />
+          <AdminRoute
+            auth={this.state.isLoggedIn}
+            loading={this.state.loadingUser}
+            path="/account/modules"
+            component={ModuleList}
           />
         </div>
       </Router>

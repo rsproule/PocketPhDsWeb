@@ -394,21 +394,21 @@ var StudentDropDown = ({ isOpen, toggle, student, class_id }) => {
       });
   }
 
-  function removeStudent() {
-    fire
-      .database()
-      .ref('/classes/' + class_id + '/students/' + student.id)
-      .set(null)
-      .then(() => {
-        fire
-          .database()
-          .ref('/users/' + student.id + '/classes/' + class_id)
-          .set(null);
-      })
-      .then(() => {
-        alert('Student deleted');
-      });
-  }
+  // function removeStudent() {
+  //   fire
+  //     .database()
+  //     .ref('/classes/' + class_id + '/students/' + student.id)
+  //     .set(null)
+  //     .then(() => {
+  //       fire
+  //         .database()
+  //         .ref('/users/' + student.id + '/classes/' + class_id)
+  //         .set(null);
+  //     })
+  //     .then(() => {
+  //       alert('Student deleted');
+  //     });
+  // }
 
   return (
     <Dropdown isOpen={isOpen} toggle={toggle}>

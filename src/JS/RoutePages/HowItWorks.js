@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { Jumbotron, Button, Row, Col, Card } from 'reactstrap';
-import Footer from '../Footer.js';
-import youtube from '../../Logos/youtube.png';
 import facebook from '../../Logos/fb.png';
-import twitter from '../../Logos/twitter.png';
 import snapchat from '../../Logos/snap.png';
+import twitter from '../../Logos/twitter.png';
+import youtube from '../../Logos/youtube.png';
+import Footer from '../Footer.js';
+import React, { Component } from 'react';
+import { Button, Card, Col, Jumbotron, Row } from 'reactstrap';
 
 export default class HowItWorks extends Component {
   render() {
@@ -14,13 +14,15 @@ export default class HowItWorks extends Component {
           <Jumbotron>
             <h1 className="display-3">Brain Coaching</h1>
             <p className="lead">
-              By creating an account with pocket PhD's, you gain access to all
-              of our brain education material, combined with a brain coach who
-              can help you work through any problem you have in school.
+              By creating an account with Pocket PhD's, you gain access to all
+              of our brain education material, combined with a Brain Coach
+              available by text message to help you work through any problem you
+              have in school. Great for individual families and classrooms!
             </p>
             <hr className="my-2" />
             <center>
               <iframe
+                title="How it Works"
                 className="video"
                 src="https://www.youtube.com/embed/b5hyeHiIcyY"
                 frameborder="0"
@@ -230,7 +232,7 @@ export default class HowItWorks extends Component {
                   </p>
                   <center>
                     <a href="https://www.youtube.com/channel/UCxgGE_KNjbll4MngWO-4Sgg/featured">
-                      <img src={youtube} width="45%" />
+                      <img src={youtube} alt="youtube" width="45%" />
                     </a>
                   </center>
                 </Card>
@@ -246,21 +248,21 @@ export default class HowItWorks extends Component {
                     <Col>
                       <center>
                         <a href="https://twitter.com/PocketPhDs">
-                          <img src={twitter} height="100" />
+                          <img src={twitter} alt="twitter" height="100" />
                         </a>
                       </center>
                     </Col>
                     <Col>
                       <center>
                         <a href="https://www.facebook.com/PocketPhDs/">
-                          <img src={facebook} height="100" />
+                          <img src={facebook} alt="facebook" height="100" />
                         </a>
                       </center>
                     </Col>
                     <Col>
                       <center>
                         <div>
-                          <img src={snapchat} height="100" />
+                          <img src={snapchat} alt="snapchat" height="100" />
                           username: pocketphds
                         </div>
                       </center>

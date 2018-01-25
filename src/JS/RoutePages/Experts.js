@@ -9,6 +9,8 @@ import {
   CarouselIndicators,
   CarouselCaption
 } from 'reactstrap';
+import Footer from '../Footer.js';
+
 import wade from '../../Logos/wade.png';
 import alex from '../../Logos/alex.png';
 import nathan from '../../Logos/experts/nathan.jpg';
@@ -227,10 +229,7 @@ export default class Experts extends Component {
               object-fit="scale-down"
             />
           </div>
-          <CarouselCaption
-            captionText={'"' + expert.quote + '"'}
-            captionHeader={expert.name}
-          />
+          <CarouselCaption captionHeader={expert.name} />
         </CarouselItem>
       );
     });
@@ -298,17 +297,25 @@ export default class Experts extends Component {
               <Col>
                 {/* Images of wade and alex with short bio and resumes */}
                 <div>
-                  <img src={wade} alt="Image of Wade + Pam" height="200" />
+                  <img src={wade} alt="Wade + Pam" height="200" />
                   <br />
                   Wade with his mom (and first tutor), Pam
+                  <br />
+                  <a href="https://storage.googleapis.com/wzukusers/user-22198339/documents/572a2d27670afTKUqSWW/Resume_Wade%20Self.pdf">
+                    Wade's Resume
+                  </a>
                 </div>
                 <br />
                 <br />
 
                 <div>
-                  <img src={alex} alt="Image of Alex + Liz" height="200" />
+                  <img src={alex} alt="Alex + Liz" height="200" />
                   <br />
                   Alex with her mom (and first tutor), Liz
+                  <br />
+                  <a href="https://storage.googleapis.com/wzukusers/user-22198339/documents/572b604cc4ef0oiu6Oi4/Resume_Alex%20Russo.pdf">
+                    Alex's Resume
+                  </a>
                 </div>
               </Col>
             </Row>
@@ -342,9 +349,14 @@ export default class Experts extends Component {
                   onClickHandler={this.next}
                 />
               </Carousel>
+              <center>
+                <p>"{experts[this.state.activeIndex].quote}"</p>
+                <p>{experts[this.state.activeIndex].about}</p>
+              </center>
             </Jumbotron>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
