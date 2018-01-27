@@ -252,17 +252,17 @@ export default class Account extends Component {
                   >
                     Add Tutor
                   </Link>
-                  <Link
-                    to="/account/assign-tutor"
-                    onClick={() => this.tabClicked('assign-tutor')}
-                    className={
-                      this.state.currentTab === 'assign-tutor'
-                        ? 'activeTab'
-                        : ''
-                    }
-                  >
-                    Assign Tutor
-                  </Link>
+                  {/* <Link
+                      to="/account/assign-tutor"
+                      onClick={() => this.tabClicked('assign-tutor')}
+                      className={
+                        this.state.currentTab === 'assign-tutor'
+                      ? 'activeTab'
+                      : ''
+                      }
+                      >
+                      Assign Tutor
+                    </Link> */}
                   <Link
                     to="/account/create-module"
                     onClick={() => this.tabClicked('create-module')}

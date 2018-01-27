@@ -3,10 +3,14 @@ import React, { Component } from 'react';
 import { Jumbotron, Input, Label, Button } from 'reactstrap';
 import Link from 'valuelink';
 
+// var mailgun = require('mailgun-js')({
+//   apiKey : "key-eb30c3b68f928f85c256c7f8b70e8a67",
+//   domain : "pocketphds.com"
+//  })
+
 export default class Contact extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       name: '',
       email: '',
@@ -16,21 +20,56 @@ export default class Contact extends Component {
     };
   }
 
-  sendEmail(nameLink, emailLink, phoneLink, messageLink) {
-    this.setState({
-      shouldShowErrors: true
-    });
+  sendEmail() {
+    var xml = new XMLHttpRequest();
 
-    if (
-      nameLink.error |
-      emailLink.error |
-      phoneLink.error |
-      messageLink.error
-    ) {
-      return;
-    }
+    xml.open(
+      'POST',
+      'https://api.mailgun.net/v3/pocketphds.com/messages',
+      true
+    );
 
-    // send the damn email somehow
+    var data = {
+      from: this.state.name + ' ' + this.state.email,
+      to: 'wade@pocketphds.com',
+      subject: 'Pocket PhDs - Contact Us Form',
+      text: this.state.message + '\n\n Phone #: ' + this.state.phone
+    };
+
+    xml.setRequestHeader(
+      'Authorization',
+      'Basic ' + btoa('api:key-eb30c3b68f928f85c256c7f8b70e8a67')
+    );
+
+    var formData = new FormData();
+    formData.append('from', data.from);
+    formData.append('to', data.to);
+    formData.append('subject', data.subject);
+    formData.append('text', data.text);
+
+    xml.send(formData);
+
+    xml.onreadystatechange = () => {
+      console.log(xml.status);
+      if (xml.readyState === XMLHttpRequest.DONE && xml.status === 200) {
+        // auth successful
+        alert('Message Sent Successfully');
+        this.setState({
+          name: '',
+          email: '',
+          phone: '',
+          message: '',
+          shouldShowErrors: false
+        });
+      }
+    };
+
+    // xml.send("from=" + data.from + '&to=' + data.to + "&subject=" + data.subject + "&text=" + this.state.message)
+    //    xml.send(formData);
+
+    // mailgun.messages().send(data, (err, body) => {
+    //   console.log(body);
+    // })
   }
 
   render() {
@@ -108,9 +147,22 @@ export default class Contact extends Component {
             <center>
               <Button
                 color="primary"
-                onClick={() =>
-                  this.sendEmail(nameLink, emailLink, phoneLink, messageLink)
-                }
+                onClick={() => {
+                  this.setState({
+                    shouldShowErrors: true
+                  });
+
+                  if (
+                    nameLink.error ||
+                    emailLink.error ||
+                    phoneLink.error ||
+                    messageLink.error
+                  ) {
+                    console.log('Error, Cant send');
+                    return;
+                  }
+                  this.sendEmail();
+                }}
               >
                 Submit
               </Button>

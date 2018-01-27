@@ -1,5 +1,5 @@
 import facebook from '../../Logos/fb.png';
-import snapchat from '../../Logos/snap.png';
+// import snapchat from '../../Logos/snap.png';
 import twitter from '../../Logos/twitter.png';
 import youtube from '../../Logos/youtube.png';
 import Footer from '../Footer.js';
@@ -34,8 +34,8 @@ export default class HowItWorks extends Component {
 
             <p className="lead">
               If you are a school looking to enhance your classroom with
-              neuroscience, <a href="/contact">contact us</a> today to request a
-              demo.
+              neuroscience, <a href="/contact-us">contact us</a> today to
+              request a demo.
             </p>
           </Jumbotron>
 
@@ -210,7 +210,7 @@ export default class HowItWorks extends Component {
 
             <p className="lead">
               Don't see a package that is right for you?{' '}
-              <a href="/contact">Contact us</a> and we will figure out a
+              <a href="/contact-us">Contact us</a> and we will figure out a
               solution to satisfy your needs.
             </p>
           </Jumbotron>
@@ -257,14 +257,6 @@ export default class HowItWorks extends Component {
                         <a href="https://www.facebook.com/PocketPhDs/">
                           <img src={facebook} alt="facebook" height="100" />
                         </a>
-                      </center>
-                    </Col>
-                    <Col>
-                      <center>
-                        <div>
-                          <img src={snapchat} alt="snapchat" height="100" />
-                          username: pocketphds
-                        </div>
                       </center>
                     </Col>
                   </Row>

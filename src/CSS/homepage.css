@@ -26,6 +26,18 @@
   /* padding: 20px; */
 }
 
+@media (min-width: 800px) {
+  .mobile-testemonials {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .carousel-testemonials {
+    display: none;
+  }
+}
+
 /* @media (min-width: 799px) {
   .image {
     width: 15%;
@@ -44,13 +56,14 @@
 
 @media (min-width: 799px) {
   .video {
-    width: 35%;
-    height: 200px;
+    width: 65%;
+    height: 350px;
   }
 }
 
 @media (max-width: 799px) {
   .video {
     width: 90%;
+    height: 250px;
   }
 }

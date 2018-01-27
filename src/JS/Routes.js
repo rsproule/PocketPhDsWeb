@@ -8,7 +8,7 @@ import AddTutor from './RoutePages/AddTutor.js';
 import Class from './RoutePages/Class.js';
 import CreateClass from './RoutePages/CreateClass.js';
 import CreateModule from './RoutePages/CreateModule.js';
-import AssignTutor from './RoutePages/AssignTutor.js';
+// import AssignTutor from './RoutePages/AssignTutor.js';
 import EditAccount from './RoutePages/EditProfile.js';
 import ChangeSubscription from './RoutePages/ChangeSubscription.js';
 import HowItWorks from './RoutePages/HowItWorks.js';
@@ -209,7 +209,7 @@ class Routes extends Component {
       <NavLink to="/how-it-works">How it Works</NavLink>,
       <NavLink to="/experts">Our Experts</NavLink>,
       <NavLink to="/faq">FAQ</NavLink>,
-      <NavLink to="/contact">Contact</NavLink>
+      <NavLink to="/contact-us">Contact</NavLink>
     ];
 
     return (
@@ -348,7 +348,7 @@ class Routes extends Component {
           <Route path="/how-it-works" component={HowItWorks} />
           <Route path="/experts" component={Experts} />
           <Route path="/faq" component={FAQ} />
-          <Route path="/contact" component={Contact} />
+          <Route path="/contact-us" component={Contact} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           {/* These are the secure routes that should require user to be authenticated */}
@@ -388,12 +388,12 @@ class Routes extends Component {
             path="/account/create-module"
             component={CreateModule}
           />
-          <AdminRoute
+          {/* <AdminRoute
             auth={this.state.isLoggedIn}
             loading={this.state.loadingUser}
             path="/account/assign-tutor"
             component={AssignTutor}
-          />
+          /> */}
           <AdminRoute
             auth={this.state.isLoggedIn}
             loading={this.state.loadingUser}

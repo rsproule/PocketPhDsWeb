@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { fire } from '../firebase.js';
-import { Button, ListGroup, ListGroupItem } from 'reactstrap';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 
 export default class TutorList extends Component {
   constructor(props) {
@@ -68,7 +68,7 @@ export default class TutorList extends Component {
             })}
           </ListGroup>
         ) : (
-          'Loading...'
+          <center>Loading...</center>
         )}
       </div>
     );

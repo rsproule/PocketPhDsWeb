@@ -1,12 +1,6 @@
 import { fire } from '../firebase.js';
 import React, { Component } from 'react';
-import {
-  Button,
-  Collapse,
-  Jumbotron,
-  ListGroup,
-  ListGroupItem
-} from 'reactstrap';
+import { Collapse, Jumbotron, ListGroup, ListGroupItem } from 'reactstrap';
 
 export default class ModuleList extends Component {
   constructor(props) {
@@ -98,11 +92,11 @@ export default class ModuleList extends Component {
                           Subscription Level: {m.subscriptionLevel}
                         </p>
                         {/* <p className="lead">
-                              Quiz: {Object.values(m.quiz).map((q, ind)=> {
-                                console.log(q.questions);
-                                return q.questions
-                              })}
-                            </p> */}
+                          Quiz: {Object.values(m.quiz).map((q, ind)=> {
+                          console.log(q.questions);
+                          return q.questions
+                          })}
+                        </p> */}
                       </Jumbotron>
                     </div>
                   </Collapse>
@@ -111,7 +105,7 @@ export default class ModuleList extends Component {
             })}
           </ListGroup>
         ) : (
-          <center>"Loading..."</center>
+          <center>Loading...</center>
         )}
       </div>
     );

@@ -218,7 +218,7 @@ export default class Experts extends Component {
           <div
             style={{
               width: 100 + '%',
-              backgroundColor: 'grey',
+              backgroundColor: '#c5c8cc',
               textAlign: 'center'
             }}
           >
@@ -229,7 +229,8 @@ export default class Experts extends Component {
               object-fit="scale-down"
             />
           </div>
-          <CarouselCaption captionHeader={expert.name} />
+          <br />
+          <CarouselCaption captionHeader={expert.name} captionText="" />
         </CarouselItem>
       );
     });

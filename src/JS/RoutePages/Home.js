@@ -84,13 +84,17 @@ class Home extends Component {
 
   render() {
     const slides = testemonials.map((test, i) => {
+      console.log(i);
       return (
         <CarouselItem
           onExiting={this.onExiting}
           onExited={this.onExited}
           key={i}
         >
-          <div style={{ height: 200 + 'px', backgroundColor: 'grey' }} />
+          <div
+            key={i}
+            style={{ height: 300 + 'px', backgroundColor: '#6e737a' }}
+          />
           <CarouselCaption captionText={test.quote} captionHeader={test.who} />
         </CarouselItem>
       );
@@ -101,27 +105,25 @@ class Home extends Component {
         <div className="home">
           <div className="logo-container">
             <img src={plogo} alt="logo" className="logo" height="80" />
-
             <h4 className="display-4 title-text">Pocket PhDs</h4>
           </div>
-
           <hr className="my-3" />
+          <Jumbotron>
+            <h1 className="display-4"> Unlock your Brain Power </h1>
+            <hr className="my-3" />
 
-          <center>
-            <iframe
-              title="Introduction"
-              className="video"
-              src="https://www.youtube.com/embed/b5hyeHiIcyY"
-              frameborder="0"
-              allow="autoplay; encrypted-media"
-              allowfullscreen="true"
-            />
-          </center>
-
-          <h4 className="display-4" style={{ fontSize: 22 + 'pt' }}>
-            Unlock your Brain Power
-          </h4>
-
+            <center>
+              <iframe
+                title="Introduction"
+                className="video"
+                src="https://www.youtube.com/embed/b5hyeHiIcyY"
+                frameBorder="0"
+                allow="autoplay; encrypted-media"
+                allowFullScreen="true"
+                passive
+              />
+            </center>
+          </Jumbotron>
           <hr className="my-3" />
           <Row>
             <Col>
@@ -171,6 +173,7 @@ class Home extends Component {
             <p className="display-4">Testimonials</p>
             <hr className="my-3" />
             <Carousel
+              className="carousel-testemonials"
               pause="hover"
               interval="5000"
               activeIndex={this.state.activeIndex}
@@ -181,6 +184,7 @@ class Home extends Component {
                 items={testemonials}
                 activeIndex={this.state.activeIndex}
                 onClickHandler={this.goToIndex}
+                key={this.state.activeIndex}
               />
               {slides}
               <CarouselControl
@@ -194,53 +198,50 @@ class Home extends Component {
                 onClickHandler={this.next}
               />
             </Carousel>
-            {/* <div>
+            <div className="mobile-testemonials">
               <Row>
-                <Col>
-              <p>
-              "As a parent of a high school sophomore and a school
-              counselor, I highly recommend Pocket PhDs. Their flexibility
-              to help my daughter at virtually any time day or night is
-              unparalleled. Whether working through a complex math problem
-              or studying for a chemistry final, my daughter and I
-              couldn't be more pleased."
-              <br />
-              <b> - Amy B., Ladue School District (Missouri) </b>
-              </p>
-                </Col>
+                <p>
+                  "As a parent of a high school sophomore and a school
+                  counselor, I highly recommend Pocket PhDs. Their flexibility
+                  to help my daughter at virtually any time day or night is
+                  unparalleled. Whether working through a complex math problem
+                  or studying for a chemistry final, my daughter and I couldn't
+                  be more pleased."
+                  <br />
+                  <b> - Amy B., Ladue School District (Missouri) </b>
+                </p>
 
-                <Col>
-              <p>
-              "Pocket PhDs was so helpful with my chemistry studies. The
-              video chat allowed me to show Wade the questions I was
-              struggling with and he patiently talked me through how to
-              solve them.
-              <br />
-              I would not have passed this course without his help!"​
-              <br />
-              <b>
-              {' '}
-              - Melissa M., Undergraduate at the University of Texas{' '}
-              </b>
-              ​
-              </p>
-                </Col>
+                <p>
+                  "Pocket PhDs was so helpful with my chemistry studies. The
+                  video chat allowed me to show Wade the questions I was
+                  struggling with and he patiently talked me through how to
+                  solve them.
+                  <br />
+                  I would not have passed this course without his help!"​
+                  <br />
+                  <b>
+                    {' '}
+                    - Melissa M., Undergraduate at the University of Texas{' '}
+                  </b>
+                  ​
+                </p>
+
+                <p>
+                  "Tutoring with Alex at Pocket PhD's gave my son the
+                  opportunity to ask specific questions in a relaxed
+                  environment. Not only did Alex help drastically improve his
+                  Algebra grade, but she gave him the confidence to believe that
+                  he can be successful at Math."
+                  <br />
+                  <b> - Megan T., Saint Louis, Missouri </b>
+                </p>
               </Row>
-              <p>
-                "Tutoring with Alex at Pocket PhD's gave my son the opportunity
-                to ask specific questions in a relaxed environment. Not only did
-                Alex help drastically improve his Algebra grade, but she gave
-                him the confidence to believe that he can be successful at
-                Math."
-                <br />
-                <b> - Megan T., Saint Louis, Missouri </b>
-              </p>
-            </div> */}
+            </div>
           </Jumbotron>
 
           <Row>
             <Col>
-              <center>
+              <center style={{ padding: 10 + 'px' }}>
                 <Button
                   href="https://goo.gl/forms/ZR0PhU2d7dRc57Yu2"
                   color="primary"
@@ -250,8 +251,8 @@ class Home extends Component {
               </center>
             </Col>
             <Col>
-              <center>
-                <Button href="mailto:wade@pocketphds.com" color="primary">
+              <center style={{ padding: 10 + 'px' }}>
+                <Button href="/contact-us" color="primary">
                   Contact Us Today
                 </Button>
               </center>
