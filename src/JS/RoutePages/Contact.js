@@ -36,10 +36,7 @@ export default class Contact extends Component {
       text: this.state.message + '\n\n Phone #: ' + this.state.phone
     };
 
-    xml.setRequestHeader(
-      'Authorization',
-      'Basic ' + btoa('api:key-eb30c3b68f928f85c256c7f8b70e8a67')
-    );
+    xml.setRequestHeader('Authorization', 'Basic ' + btoa('API_KEY_HERE'));
 
     var formData = new FormData();
     formData.append('from', data.from);

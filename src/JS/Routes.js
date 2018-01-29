@@ -17,6 +17,7 @@ import FAQ from './RoutePages/FAQ.js';
 import Contact from './RoutePages/Contact.js';
 import TutorList from './RoutePages/TutorList.js';
 import ModuleList from './RoutePages/ModuleList.js';
+import Privacy from './RoutePages/Privacy.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -26,6 +27,7 @@ import {
   Link,
   Redirect,
   Route,
+  HashRouter,
   BrowserRouter as Router
 } from 'react-router-dom';
 // helper bootstap guys
@@ -213,7 +215,7 @@ class Routes extends Component {
     ];
 
     return (
-      <Router>
+      <Router history={HashRouter}>
         <div>
           <div className="navigation">
             <ul>
@@ -351,6 +353,7 @@ class Routes extends Component {
           <Route path="/contact-us" component={Contact} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
+          <Route path="/privacy" component={Privacy} />
           {/* These are the secure routes that should require user to be authenticated */}
           <PrivateRoute
             auth={this.state.isLoggedIn}

@@ -21,7 +21,6 @@ export default class ChangeSubscription extends Component {
       .database()
       .ref('emailToUId/' + email)
       .once('value', snap => {
-        console.log(snap);
         const id = snap.val();
 
         if (id) {
