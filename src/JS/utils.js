@@ -4,19 +4,39 @@ var createClass = ({ className, teacherId, students }) => {
   return new Promise((resolve, reject) => {
     registerAllStudents({ students: students }).then(
       students_parents_id_array => {
+        //count all the valid students
+        var count = 0;
+        for (var i in students_parents_id_array) {
+          if (students_parents_id_array[i].student) {
+            count++;
+          }
+        }
+        if (count < 1) {
+          reject(
+            new Error(
+              'Unable to create the class. There were no valid students.'
+            )
+          );
+          return;
+        }
         // upload the class to firebase in the teachers name
         // HACK: This here is a little map reduce to get the student array
         // to be in the form students : {{id : true}, {id2 : true}} just
         // stare at it for a min and it will make sense
         let students = students_parents_id_array
           .map(stud_par => {
+            if (!stud_par.student) {
+              return;
+            }
             var o = {};
             o[stud_par['student']] = true;
             return o;
           })
           .reduce((result, item) => {
-            var key = Object.keys(item)[0]; //first property:  id
-            result[key] = item[key]; // assign the second property: true
+            if (item) {
+              var key = Object.keys(item)[0]; //first property:  id
+              result[key] = item[key]; // assign the second property: true
+            }
             return result;
           }, {});
 
@@ -71,7 +91,6 @@ var createClass = ({ className, teacherId, students }) => {
 var registerAllStudents = ({ students }) => {
   return new Promise((resolveReg, rejectReg) => {
     var promiseArray = [];
-    //  var students_id_array = [];
     var secondaryFire = initSecondary();
 
     // TODO: send emails to all the students to invite them to join the class:
@@ -136,7 +155,9 @@ var registerAllStudents = ({ students }) => {
 
         resolveReg(student_parent_arr);
       })
-      .catch(error => alert(error));
+      .catch(error => {
+        alert(error);
+      });
   });
 };
 
@@ -228,7 +249,6 @@ var createParent = ({ student_id, student, secondaryFire }) => {
         });
       })
       .catch(error => {
-        // TODO: in case where email is already in use we should do something else
         if (error.code === 'auth/email-already-in-use') {
           //continue;
           fire
@@ -274,7 +294,10 @@ function getId(userAuth) {
 var uploadStudentToDatabase = ({ student, student_id, cancelUpload }) => {
   return new Promise((resolveUpload, rejectUpload) => {
     if (cancelUpload) {
-      resolveUpload({ student_id: student_id, student: student });
+      if (student_id) {
+        resolveUpload({ student_id: student_id, student: student });
+      }
+      resolveUpload({});
     } else {
       //create chat for student
       var chatUsers = {};

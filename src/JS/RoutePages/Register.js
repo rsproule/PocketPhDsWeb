@@ -100,6 +100,13 @@ export default class Register extends Component {
                 })
                 .catch(error => alert(error))
                 .then(() => {
+                  // add user to uid table
+                  fire
+                    .database()
+                    .ref('emailToUId/' + this.state.email.replace('.', ','))
+                    .set(fire.auth().currentUser.uid);
+                })
+                .then(() => {
                   // this will force render to be called again this time with the redirect triggered
                   this.setState({
                     redirect: true,

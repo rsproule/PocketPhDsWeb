@@ -136,6 +136,9 @@ export default class CreateClass extends Component {
       .catch(error => {
         hasRegistrationErrors = true;
         serverErrors = error.message;
+        this.setState({
+          submitting: false
+        });
         alert(error);
       })
       .then(() => {
