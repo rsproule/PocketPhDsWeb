@@ -232,7 +232,7 @@ export default class HowItWorks extends Component {
                   </p>
                   <center>
                     <a href="https://www.youtube.com/channel/UCxgGE_KNjbll4MngWO-4Sgg/featured">
-                      <img src={youtube} alt="youtube" width="45%" />
+                      <img src={youtube} alt="youtube" height="50" />
                     </a>
                   </center>
                 </Card>

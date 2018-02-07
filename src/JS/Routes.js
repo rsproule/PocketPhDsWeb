@@ -8,7 +8,7 @@ import AddTutor from './RoutePages/AddTutor.js';
 import Class from './RoutePages/Class.js';
 import CreateClass from './RoutePages/CreateClass.js';
 import CreateModule from './RoutePages/CreateModule.js';
-// import AssignTutor from './RoutePages/AssignTutor.js';
+import AssignTutor from './RoutePages/AssignTutor.js';
 import EditAccount from './RoutePages/EditProfile.js';
 import ChangeSubscription from './RoutePages/ChangeSubscription.js';
 import HowItWorks from './RoutePages/HowItWorks.js';
@@ -18,6 +18,7 @@ import Contact from './RoutePages/Contact.js';
 import TutorList from './RoutePages/TutorList.js';
 import ModuleList from './RoutePages/ModuleList.js';
 import Privacy from './RoutePages/Privacy.js';
+import UpdateBrainTip from './RoutePages/UpdateBrainTip.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -390,12 +391,12 @@ class Routes extends Component {
             path="/account/create-module"
             component={CreateModule}
           />
-          {/* <AdminRoute
+          <AdminRoute
             auth={this.state.isLoggedIn}
             loading={this.state.loadingUser}
             path="/account/assign-tutor"
             component={AssignTutor}
-          /> */}
+          />
           <AdminRoute
             auth={this.state.isLoggedIn}
             loading={this.state.loadingUser}
@@ -413,6 +414,12 @@ class Routes extends Component {
             loading={this.state.loadingUser}
             path="/account/modules"
             component={ModuleList}
+          />
+          <AdminRoute
+            auth={this.state.isLoggedIn}
+            loading={this.state.loadingUser}
+            path="/account/update-brain-tip"
+            component={UpdateBrainTip}
           />
         </div>
       </Router>
