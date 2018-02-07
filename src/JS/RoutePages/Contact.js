@@ -36,7 +36,12 @@ export default class Contact extends Component {
       text: this.state.message + '\n\n Phone #: ' + this.state.phone
     };
 
-    xml.setRequestHeader('Authorization', 'Basic ' + btoa('API_KEY_HERE'));
+    xml.setRequestHeader(
+      'Authorization',
+      'Basic ' + btoa('api:key-eb30c3b68f928f85c256c7f8b70e8a67')
+    );
+    // xml.setRequestHeader("Access-Control-Allow-Origin", "*");
+    // xml.setRequestHeader("Access-Control-Allow-Headers", "content-type, accept");
 
     var formData = new FormData();
     formData.append('from', data.from);
@@ -47,7 +52,6 @@ export default class Contact extends Component {
     xml.send(formData);
 
     xml.onreadystatechange = () => {
-      console.log(xml.status);
       if (xml.readyState === XMLHttpRequest.DONE && xml.status === 200) {
         // auth successful
         alert('Message Sent Successfully');

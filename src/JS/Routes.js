@@ -27,7 +27,6 @@ import {
   Link,
   Redirect,
   Route,
-  HashRouter,
   BrowserRouter as Router
 } from 'react-router-dom';
 // helper bootstap guys
@@ -215,7 +214,7 @@ class Routes extends Component {
     ];
 
     return (
-      <Router history={HashRouter}>
+      <Router>
         <div>
           <div className="navigation">
             <ul>

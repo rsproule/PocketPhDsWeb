@@ -24,7 +24,7 @@ export default class HowItWorks extends Component {
               <iframe
                 title="How it Works"
                 className="video"
-                src="https://www.youtube.com/embed/b5hyeHiIcyY"
+                src="https://www.youtube.com/embed/A7qtOL08_Ok"
                 frameborder="0"
                 allow="autoplay; encrypted-media"
                 allowfullscreen="true"
