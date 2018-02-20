@@ -266,7 +266,12 @@ class StudentListItem extends Component {
               />
             </span>
           )}
-          <b className="head">{this.props.student.name}</b>
+          <b className="head">{this.props.student.name} &nbsp;</b>
+          {this.props.student.notificationToken ? (
+            <Badge color="success"> Setup Complete </Badge>
+          ) : (
+            <Badge color="secondary"> Setup Pending </Badge>
+          )}
           <br />
           {this.props.student.progress + '% Complete'}
           <Progress

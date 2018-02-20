@@ -26,6 +26,7 @@ class Footer extends Component {
             ​ REFUND POLICY: Pocket PhD's does not provide refunds for unlimited
             tutoring services.
           </p>
+          <p>v1.0.28</p>
         </footer>
       </div>
     );

@@ -103,7 +103,7 @@ export default class Register extends Component {
                   // add user to uid table
                   fire
                     .database()
-                    .ref('emailToUId/' + this.state.email.replace('.', ','))
+                    .ref('emailToUId/' + this.state.email.split('.').join(','))
                     .set(fire.auth().currentUser.uid);
                 })
                 .then(() => {

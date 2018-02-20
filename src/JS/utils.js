@@ -189,7 +189,7 @@ var createStudent = ({ student, secondaryFire }) => {
           // get the user id of the email that was already in use
           fire
             .database()
-            .ref('/emailToUId/' + student.email_student.replace('.', ','))
+            .ref('/emailToUId/' + student.email_student.split('.').join(','))
             .once('value', snap => {
               // check to make sure that user is of the same type... we cant have
               // the same email tied to different account types
@@ -253,7 +253,7 @@ var createParent = ({ student_id, student, secondaryFire }) => {
           //continue;
           fire
             .database()
-            .ref('/emailToUId/' + student.email_parent.replace('.', ','))
+            .ref('/emailToUId/' + student.email_parent.split('.').join(','))
             .once('value', snap => {
               // check to make sure that user is of the same type... we cant have
               // the same email tied to different account types
@@ -335,7 +335,7 @@ var uploadStudentToDatabase = ({ student, student_id, cancelUpload }) => {
 
           return fire
             .database()
-            .ref('/emailToUId/' + student.email_student.replace('.', ','))
+            .ref('/emailToUId/' + student.email_student.split('.').join(','))
             .set(student_id);
         })
         .then(() => {
@@ -372,7 +372,7 @@ var uploadParentToDatabase = ({
               //add to our fancy lookup map
               return fire
                 .database()
-                .ref('/emailToUId/' + student.email_parent.replace('.', ','))
+                .ref('/emailToUId/' + student.email_parent.split('.').join(','))
                 .set(parent_id);
             })
             .then(() => {
@@ -397,6 +397,7 @@ var uploadParentToDatabase = ({
               type: 'parent',
               users: chatUsersParents
             })
+
             // 2 add to database
             .then(chatSnap => {
               var s = {};
@@ -408,6 +409,13 @@ var uploadParentToDatabase = ({
                 name: 'Parent of ' + student.name,
                 chat: chatSnap.key
               });
+            })
+            .then(() => {
+              //add to our fancy lookup map
+              return fire
+                .database()
+                .ref('/emailToUId/' + student.email_parent.split('.').join(','))
+                .set(parent_id);
             })
             .then(() => {
               res({ student_id: student_id, parent_id: parent_id });
