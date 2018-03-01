@@ -88,7 +88,7 @@ export default class ChangeSubscription extends Component {
       .check(x => x, 'Subscription level required');
 
     return (
-      <div style={{ marginTop: 10 + 'px' }}>
+      <div style={{ padding: 30 + 'px', borderTop: '1px solid lightgrey' }}>
         <center>
           <FormGroup>
             <Label>Find Teacher: </Label>

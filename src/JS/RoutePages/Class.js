@@ -60,76 +60,112 @@ export default class Class extends Component {
             .database()
             .ref('/users/' + s)
             .on('value', snapshot => {
-              let name = snapshot.val().name;
+              let student_name = snapshot.val().name;
               let modulesClasses = snapshot.val().modules;
               let notificationToken = snapshot.val().notificationToken;
               let email = snapshot.val().email;
               let classes = snapshot.val().classes;
+              let STUDENT = {
+                id: snapshot.key,
+                name: student_name,
+                email: email,
+                modules: [],
+                progress: 0,
+                notificationToken: notificationToken
+              };
+              var students = this.state.students;
+              students[s] = STUDENT;
+              this.setState({
+                students: students
+              });
               if (
                 Object.keys(classes).indexOf(this.props.match.params.classid) >
                 -1
               ) {
                 var MODULES = [];
-                var totalQuestions = 0;
-                var totalAnswered = 0;
+                var allQuestions = {};
+                var allAnswered = {};
                 for (let c in modulesClasses) {
                   if (c === this.props.match.params.classid) {
                     var modulesSnap = modulesClasses[c].modules;
                     for (let k in modulesSnap) {
-                      var questionsAnsweredCount = 0;
                       let m = modulesSnap[k];
                       let description = m['description'];
                       let title = m['title'];
                       let name = m['name'];
                       let videoWatched = m['videoWatched'];
-                      if (videoWatched) questionsAnsweredCount++;
-                      let quizTaken = m['quizTaken'];
-                      var responses = [];
-                      var numQuestions = m['questionCount'];
-                      for (let question in m['responses']) {
-                        questionsAnsweredCount++;
-                        responses.push({
-                          question: question,
-                          response: m['responses'][question]
-                        });
+                      allQuestions[k + ':vid'] = true;
+                      if (videoWatched) {
+                        allAnswered[k + ':vid'] = true;
                       }
+                      let quizTaken = m['quizTaken'];
 
-                      let MODULE = {
-                        name: name,
-                        title: title,
-                        description: description,
-                        quizTaken: quizTaken,
-                        videoWatched: videoWatched,
-                        responses: responses
-                      };
-                      MODULES.push(MODULE);
-                      totalAnswered += questionsAnsweredCount;
-                      totalQuestions += numQuestions + 1; // plus on to account for video
+                      // try to grab the module
+                      var questionsArray;
+                      fire
+                        .database()
+                        .ref('/modules/' + k + '/quiz/questions')
+                        .on('value', questionsSnap => {
+                          var questionsArray;
+                          var responses = [];
+                          //questionsAnsweredCount = 0;
+                          questionsArray = questionsSnap.val().map((q, i) => {
+                            allQuestions[k + '-' + i] = q.question;
+                            return q.question;
+                          });
+
+                          for (let question in m['responses']) {
+                            responses.push({
+                              question: questionsArray[question],
+                              response: m['responses'][question]
+                            });
+
+                            allAnswered[k + question] =
+                              m['responses'][question];
+                          }
+
+                          let MODULE = {
+                            name: name,
+                            title: title,
+                            description: description,
+                            quizTaken: quizTaken,
+                            videoWatched: videoWatched,
+                            responses: responses
+                          };
+                          MODULES.push(MODULE);
+                          //totalAnswered += questionsAnsweredCount;
+                          //totalQuestions += numQuestions + 1; // plus one to account for video
+
+                          let progress =
+                            Object.keys(allAnswered).length /
+                            Object.keys(allQuestions).length *
+                            100.0;
+                          let STUDENT = {
+                            id: snapshot.key,
+                            name: student_name,
+                            progress: progress,
+                            modules: MODULES,
+                            email: email,
+                            notificationToken: notificationToken
+                          };
+                          var students = this.state.students;
+                          students[s] = STUDENT;
+
+                          this.setState({
+                            students: students
+                          });
+                        });
                     }
-                    let progress = totalAnswered / totalQuestions * 100.0;
-                    let STUDENT = {
-                      id: snapshot.key,
-                      name: name,
-                      progress: progress,
-                      modules: MODULES,
-                      email: email,
-                      notificationToken: notificationToken
-                    };
-                    var students = this.state.students;
-                    students[s] = STUDENT;
-
-                    this.setState({
-                      students: students
-                    });
                   }
                 }
-              } else {
-                students = this.state.students;
-                delete students[s];
-                this.setState({
-                  students: students
-                });
               }
+              // else {
+              //   students = this.state.students;
+              //   delete students[s];
+              //   this.setState({
+              //     students: students
+              //   });
+              // }
             });
         }
       });
@@ -319,7 +355,9 @@ class StudentListItem extends Component {
                         onClick={() => this.toggleNested(i)}
                         color="primary"
                       >
-                        View Responses
+                        {this.state.nestedCollapse[i]
+                          ? 'Hide Responses'
+                          : 'View Responses'}
                       </Button>
                       <Collapse
                         isOpen={
@@ -342,8 +380,11 @@ class StudentListItem extends Component {
                           }
 
                           return (
-                            <div key={ind}>
-                              {Number(resp.question) + 1 + ': ' + response}
+                            <div style={{ padding: 10 + 'px' }} key={ind}>
+                              <b>{ind + 1 + '.) '}</b>
+                              {resp.question + ': \n'}
+                              <br />
+                              <b>{response}</b>
                             </div>
                           );
 
