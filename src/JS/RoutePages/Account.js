@@ -244,6 +244,17 @@ export default class Account extends Component {
               <div>
                 <div className="account-tabs">
                   <Link
+                    to="/account/admin-classes"
+                    onClick={() => this.tabClicked('view-classes')}
+                    className={
+                      this.state.currentTab === 'view-classes'
+                        ? 'activeTab'
+                        : ''
+                    }
+                  >
+                    View Classes
+                  </Link>
+                  <Link
                     to="/account/add-tutor"
                     onClick={() => this.tabClicked('add-tutor')}
                     className={

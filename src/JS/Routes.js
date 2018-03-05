@@ -19,6 +19,7 @@ import TutorList from './RoutePages/TutorList.js';
 import ModuleList from './RoutePages/ModuleList.js';
 import Privacy from './RoutePages/Privacy.js';
 import UpdateBrainTip from './RoutePages/UpdateBrainTip.js';
+import AdminClasses from './RoutePages/AdminClasses.js';
 //routes:
 import Home from './RoutePages/Home.js';
 import Login from './RoutePages/Login.js';
@@ -420,6 +421,12 @@ class Routes extends Component {
             loading={this.state.loadingUser}
             path="/account/update-brain-tip"
             component={UpdateBrainTip}
+          />
+          <AdminRoute
+            auth={this.state.isLoggedIn}
+            loading={this.state.loadingUser}
+            path="/account/admin-classes"
+            component={AdminClasses}
           />
         </div>
       </Router>

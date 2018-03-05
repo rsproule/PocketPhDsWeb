@@ -12,7 +12,9 @@ export default class UpdateBrainTip extends Component {
       shouldShowErrors: false,
       title: '',
       body: '',
-      success: false
+      success: false,
+      displayTitle: '',
+      displayBody: ''
     };
   }
   updateBrainTip(titleLink, bodyLink) {
@@ -40,6 +42,21 @@ export default class UpdateBrainTip extends Component {
       });
   }
 
+  componentWillMount() {
+    fire
+      .database()
+      .ref('tipOfDay')
+      .on('value', snap => {
+        let title = snap.val().title;
+        let body = snap.val().body;
+
+        this.setState({
+          displayTitle: title,
+          displayBody: body
+        });
+      });
+  }
+
   render() {
     const titleLink = Link.state(this, 'title').check(
       x => x,
@@ -49,7 +66,20 @@ export default class UpdateBrainTip extends Component {
 
     return (
       <div style={{ padding: 20 + 'px', borderTop: '1px solid lightgrey' }}>
+        <Card
+          style={{
+            padding: 20 + 'px',
+            textAlign: 'center',
+            marginBottom: 15 + 'px',
+            backgroundColor: 'lightgrey'
+          }}
+        >
+          <h4>{this.state.displayTitle}</h4>
+          <p>{this.state.displayBody}</p>
+        </Card>
+
         <h3>Create New Brain Tip</h3>
+
         <Card style={{ padding: 20 + 'px', textAlign: 'left' }}>
           <FormGroup>
             <Label> Title: </Label>
