@@ -30,7 +30,9 @@ export default class UpdateBrainTip extends Component {
       .ref('tipOfDay/')
       .set({
         title: this.state.title,
-        body: this.state.body
+        body: this.state.body,
+        displayTitle: this.state.title,
+        displayBody: this.state.body
       })
       .then(() => {
         this.setState({
@@ -46,7 +48,7 @@ export default class UpdateBrainTip extends Component {
     fire
       .database()
       .ref('tipOfDay')
-      .on('value', snap => {
+      .once('value', snap => {
         let title = snap.val().title;
         let body = snap.val().body;
 

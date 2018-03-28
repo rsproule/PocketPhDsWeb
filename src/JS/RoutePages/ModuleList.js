@@ -91,12 +91,28 @@ export default class ModuleList extends Component {
                         <p className="lead">
                           Subscription Level: {m.subscriptionLevel}
                         </p>
-                        {/* <p className="lead">
-                          Quiz: {Object.values(m.quiz).map((q, ind)=> {
-                          console.log(q.questions);
-                          return q.questions
+                        <p className="lead">
+                          Quiz:{' '}
+                          {Object.values(m.quiz).map((q, ind) => {
+                            return q.map((obj, i) => {
+                              return (
+                                <div style={{ padding: 28 + 'px' }}>
+                                  <h5>{obj.question}</h5>
+                                  {obj.options.map((o, oi) => {
+                                    return o.option.length > 0 ? (
+                                      <li style={{ paddingLeft: 25 + 'px' }}>
+                                        {o.option}
+                                      </li>
+                                    ) : (
+                                      '(Open Ended)'
+                                    );
+                                  })}
+                                </div>
+                              );
+                            });
+                            // return <p>{q}</p>
                           })}
-                        </p> */}
+                        </p>
                       </Jumbotron>
                     </div>
                   </Collapse>

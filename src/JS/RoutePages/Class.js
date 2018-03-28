@@ -31,7 +31,8 @@ export default class Class extends Component {
       name: '',
       teacherID: '',
       students: {},
-      classId: this.props.match.params.classid
+      classId: this.props.match.params.classid,
+      loaded: false
     });
     // firebase listener init
     fire
@@ -155,7 +156,8 @@ export default class Class extends Component {
                           students[s] = STUDENT;
 
                           this.setState({
-                            students: students
+                            students: students,
+                            loaded: true
                           });
                         });
                     }
@@ -227,19 +229,24 @@ export default class Class extends Component {
         </div>
 
         <h4> Students: </h4>
-        <ListGroup>
-          {Object.values(this.state.students)
-            .sort(this.sortName)
-            .map((student, i) => {
-              return (
-                <StudentListItem
-                  key={i}
-                  student={student}
-                  classId={this.state.classId}
-                />
-              );
-            })}
-        </ListGroup>
+        {this.state.loaded ? (
+          <ListGroup>
+            {Object.values(this.state.students)
+              .sort(this.sortName)
+              .map((student, i) => {
+                return (
+                  <StudentListItem
+                    key={i}
+                    student={student}
+                    classId={this.state.classId}
+                  />
+                );
+              })}
+          </ListGroup>
+        ) : (
+          <center style={{ padding: 25 + 'px' }}>Loading...</center>
+        )}
+
         <div className="spacer" />
       </div>
     );
