@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { fire } from '../firebase.js';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { ListGroup, ListGroupItem, Button } from 'reactstrap';
 
 export default class TutorList extends Component {
   constructor(props) {
@@ -51,6 +51,28 @@ export default class TutorList extends Component {
       .off();
   }
 
+  deleteTutor(key) {
+    if (
+      window.confirm(
+        'Are you sure you want to delete ' +
+          this.state.tutors[key].name +
+          '? This is an irreversable action.'
+      )
+    ) {
+      fire
+        .database()
+        .ref('users/' + key)
+        .remove()
+        .then(res => {
+          var newTuts = this.state.tutors;
+          delete newTuts[key];
+          this.setState({
+            tutors: newTuts
+          });
+        });
+    }
+  }
+
   render() {
     return (
       <div style={{ textAlign: 'left' }}>
@@ -59,10 +81,17 @@ export default class TutorList extends Component {
             <ListGroupItem id="header">
               <h3>Pocket PhD's Tutors</h3>
             </ListGroupItem>
-            {Object.values(this.state.tutors).map((v, i) => {
+            {Object.entries(this.state.tutors).map(([k, v], i) => {
               return (
                 <ListGroupItem key={i}>
                   {v.name + ' - ' + v.email}
+                  <Button
+                    onClick={() => this.deleteTutor(k)}
+                    style={{ float: 'right' }}
+                    color="danger"
+                  >
+                    Delete Tutor
+                  </Button>
                 </ListGroupItem>
               );
             })}

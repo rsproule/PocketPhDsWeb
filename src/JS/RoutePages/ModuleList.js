@@ -1,6 +1,12 @@
 import { fire } from '../firebase.js';
 import React, { Component } from 'react';
-import { Collapse, Jumbotron, ListGroup, ListGroupItem } from 'reactstrap';
+import {
+  Button,
+  Collapse,
+  Jumbotron,
+  ListGroup,
+  ListGroupItem
+} from 'reactstrap';
 
 export default class ModuleList extends Component {
   constructor(props) {
@@ -60,6 +66,23 @@ export default class ModuleList extends Component {
     });
   }
 
+  deleteModule(key) {
+    var confirmed = window.confirm(
+      'Are you sure you want to delete ' + this.state.modules[key].name
+    );
+    if (confirmed) {
+      fire
+        .database()
+        .ref('modules/' + key)
+        .remove();
+      var newModules = this.state.modules;
+      delete newModules[key];
+      this.setState({
+        modules: newModules
+      });
+    }
+  }
+
   render() {
     return (
       <div style={{ textAlign: 'left' }}>
@@ -68,7 +91,7 @@ export default class ModuleList extends Component {
             <ListGroupItem id="header">
               <h3> Pocket PhD's Modules </h3>
             </ListGroupItem>
-            {Object.values(this.state.modules).map((m, i) => {
+            {Object.entries(this.state.modules).map(([k, m], i) => {
               return (
                 <div key={i}>
                   <ListGroupItem onClick={() => this.toggle(i)} action>
@@ -113,6 +136,13 @@ export default class ModuleList extends Component {
                             // return <p>{q}</p>
                           })}
                         </p>
+                        <Button
+                          onClick={() => this.deleteModule(k)}
+                          style={{ float: 'right' }}
+                          color="danger"
+                        >
+                          Delete
+                        </Button>
                       </Jumbotron>
                     </div>
                   </Collapse>
